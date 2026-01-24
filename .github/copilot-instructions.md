@@ -1,5 +1,54 @@
 # GitHub Copilot Instructions - Prisma Prime Market API
 
+## Objetivo
+Fornecer orientações curtas e objetivas para o Copilot gerar código consistente com o projeto, sem exemplos inline. Para detalhes, sempre consulte os arquivos em `docs/`.
+
+## Regras Essenciais
+- Arquitetura: Clean Architecture + DDD + SOLID. Fluxo de dependências: `API → Application → Domain ← Infrastructure`, com `CrossCutting` transversal. O `Domain` não depende de nenhuma outra camada.
+- Padrões: Use CQRS (commands/queries), validação com FluentValidation, eventos de domínio quando fizer sentido, e mapeamentos via camadas apropriadas.
+- Assíncrono: Prefira métodos assíncronos, evite bloqueios síncronos.
+- Exceções: Lançar exceções específicas (ex.: domínio, not found) e tratar onde devido.
+- Logging: Logging estruturado; evite concatenação de strings.
+- DI: Dependa de abstrações (interfaces). Registre serviços no container nas camadas corretas.
+- Nomenclatura/Estilo: Siga convenções C# (PascalCase para tipos/métodos/propriedades públicas, camelCase para variáveis/parâmetros, campos privados com underscore). Evite magic numbers/strings.
+- Persistência: Respeite limites de agregados; consultas somente leitura com `AsNoTracking` e paginação quando aplicável.
+
+## Como o Copilot deve agir
+- Gerar apenas o código necessário para a tarefa, mantendo as camadas e responsabilidades bem definidas.
+- Nunca adicionar dependências do `Domain` para outras camadas.
+- Quando precisar de detalhes (contratos, exemplos, comandos, decisões), consultar a documentação do projeto (seção abaixo) e seguir o que estiver definido lá.
+- Evitar produzir exemplos extensos ou tutoriais no arquivo; remeter à documentação.
+
+## Documentação a Consultar
+- Arquitetura geral e decisões: `docs/ARCHITECTURE.md`, `docs/adr/001-architecture-style.md`, `docs/adr/002-database-choice.md`.
+- Estrutura do projeto e camadas: `docs/PROJECT_STRUCTURE.md`.
+- Referências rápidas (padrões, comandos, checklist): `docs/QUICK_REFERENCE.md`.
+- Contratos e API pública: `docs/API.md`.
+- Pipeline CI/CD (quando relevante): `docs/CI_CD_SUMMARY.md`.
+- Visão geral e onboarding: `docs/README.md`.
+
+## Checklist ao Gerar Código
+- Camadas e dependências corretas e coesas.
+- Convenções de nomenclatura e estilo aderentes ao guia do projeto.
+- Aplicação de SOLID e do modelo de domínio rico (evitar anemic model).
+- Validações no lugar correto (Domínio vs. Aplicação).
+- Exceções e logs estruturados apropriados.
+- Métodos assíncronos e consultas eficientes (seleção de colunas, paginação, `AsNoTracking`).
+- Registro no DI e uso de interfaces.
+- Testes necessários (unitários/integrados) conforme o impacto.
+
+## Não Fazer
+- Não incluir blocos de código de exemplo neste arquivo.
+- Não quebrar as regras de dependência entre camadas.
+- Não introduzir decisões que conflitem com os arquivos em `docs/`.
+
+---
+
+Última atualização: Janeiro 2026  
+Versão: 2.0
+
+# GitHub Copilot Instructions - Prisma Prime Market API
+
 ## 🎯 Visão Geral do Projeto
 
 Este é o **Prisma Prime Market API**, um projeto de marketplace backend desenvolvido em **C# .NET 8.0** seguindo princípios de **Clean Architecture**, **Domain-Driven Design (DDD)** e **SOLID**. O projeto é estruturado em camadas bem definidas com foco em qualidade, testabilidade e manutenibilidade.
@@ -38,11 +87,6 @@ public class ProductService { }
 public interface IProductRepository { }
 public record CreateProductCommand : IRequest<ProductDto>;
 public class ProductDto { }
-
-// ❌ ERRADO
-public class productService { }
-public class IProductRepo { }
-public class ProductDTO { }
 ```
 
 #### Métodos e Propriedades
@@ -51,10 +95,6 @@ public class ProductDTO { }
 public async Task<Product> GetProductByIdAsync(Guid id) { }
 public string ProductName { get; set; }
 public decimal Price { get; private set; }
-
-// ❌ ERRADO
-public async Task<Product> getProductById(Guid id) { }
-public string productName { get; set; }
 ```
 
 #### Variáveis Locais e Parâmetros
@@ -63,10 +103,6 @@ public string productName { get; set; }
 var productId = Guid.NewGuid();
 var isActive = true;
 public void ProcessOrder(Order order, User currentUser) { }
-
-// ❌ ERRADO
-var ProductId = Guid.NewGuid();
-var IsActive = true;
 ```
 
 #### Campos Privados
@@ -75,10 +111,6 @@ var IsActive = true;
 private readonly IProductRepository _productRepository;
 private readonly ILogger<ProductService> _logger;
 private string _cachedValue;
-
-// ❌ ERRADO
-private readonly IProductRepository productRepository;
-private readonly ILogger<ProductService> logger;
 ```
 
 #### Constantes e Enums
@@ -344,14 +376,6 @@ public class ProductRepository : IProductRepository
 public class ProductService { } // Apenas lógica de negócio de produtos
 public class ProductRepository { } // Apenas persistência de produtos
 public class ProductValidator { } // Apenas validação de produtos
-
-// ❌ ERRADO - Classe faz muitas coisas
-public class ProductManager 
-{
-    public void SaveProduct() { }
-    public void SendEmail() { }
-    public void GenerateReport() { }
-}
 ```
 
 ### Open/Closed Principle (OCP)
@@ -400,12 +424,6 @@ public interface IWriteRepository<T>
     Task UpdateAsync(T entity);
     Task DeleteAsync(Guid id);
 }
-
-// ❌ ERRADO - Interface muito grande
-public interface IRepository<T>
-{
-    // Muitos métodos que nem sempre são necessários
-}
 ```
 
 ### Dependency Inversion Principle (DIP)
@@ -419,12 +437,6 @@ public class ProductService
     {
         _repository = repository;
     }
-}
-
-// ❌ ERRADO - Depende de concretização
-public class ProductService
-{
-    private readonly ProductRepository _repository; // Implementação concreta
 }
 ```
 
