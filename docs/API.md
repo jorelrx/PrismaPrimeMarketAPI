@@ -83,7 +83,11 @@ Query Parameters:
 ```json
 Response: 200 OK
 {
-  "items": [
+  "pageNumber": 1,
+  "pageSize": 20,
+  "totalRecords": 95,
+  "totalPages": 5,
+  "data": [
     {
       "id": "123e4567-e89b-12d3-a456-426614174000",
       "name": "Notebook Dell Inspiron 15",
@@ -102,12 +106,9 @@ Response: 200 OK
       "updatedAt": "2025-01-05T15:30:00Z"
     }
   ],
-  "pageNumber": 1,
-  "pageSize": 20,
-  "totalPages": 5,
-  "totalCount": 95,
-  "hasPreviousPage": false,
-  "hasNextPage": true
+  "succeeded": true,
+  "errors": null,
+  "message": null
 }
 ```
 
@@ -118,47 +119,53 @@ Response: 200 OK
 ```json
 Response: 200 OK
 {
-  "id": "123e4567-e89b-12d3-a456-426614174000",
-  "name": "Notebook Dell Inspiron 15",
-  "description": "Notebook com processador Intel Core i7, 16GB RAM, SSD 512GB",
-  "price": {
-    "amount": 3500.00,
-    "currency": "BRL",
-    "formattedValue": "R$ 3.500,00"
-  },
-  "stock": 15,
-  "isActive": true,
-  "categoryId": "234e5678-e89b-12d3-a456-426614174001",
-  "categoryName": "Informática",
-  "images": [
-    {
-      "id": "img-001",
-      "url": "https://storage.example.com/products/notebook-dell-1.jpg",
-      "isPrimary": true
+  "data": {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "name": "Notebook Dell Inspiron 15",
+    "description": "Notebook com processador Intel Core i7, 16GB RAM, SSD 512GB",
+    "price": {
+      "amount": 3500.00,
+      "currency": "BRL",
+      "formattedValue": "R$ 3.500,00"
     },
-    {
-      "id": "img-002",
-      "url": "https://storage.example.com/products/notebook-dell-2.jpg",
-      "isPrimary": false
-    }
-  ],
-  "specifications": [
-    {
-      "key": "Processador",
-      "value": "Intel Core i7 11ª Geração"
+    "stock": 15,
+    "isActive": true,
+    "categoryId": "234e5678-e89b-12d3-a456-426614174001",
+    "categoryName": "Informática",
+    "images": [
+      {
+        "id": "img-001",
+        "url": "https://storage.example.com/products/notebook-dell-1.jpg",
+        "isPrimary": true
+      },
+      {
+        "id": "img-002",
+        "url": "https://storage.example.com/products/notebook-dell-2.jpg",
+        "isPrimary": false
+      }
+    ],
+    "specifications": [
+      {
+        "key": "Processador",
+        "value": "Intel Core i7 11ª Geração"
+      },
+      {
+        "key": "Memória RAM",
+        "value": "16GB DDR4"
+      }
+    ],
+    "reviews": {
+      "averageRating": 4.5,
+      "totalReviews": 42
     },
-    {
-      "key": "Memória RAM",
-      "value": "16GB DDR4"
-    }
-  ],
-  "reviews": {
-    "averageRating": 4.5,
-    "totalReviews": 42
+    "createdAt": "2025-01-01T10:00:00Z",
+    "updatedAt": "2025-01-05T15:30:00Z"
   },
-  "createdAt": "2025-01-01T10:00:00Z",
-  "updatedAt": "2025-01-05T15:30:00Z"
+  "succeeded": true,
+  "errors": null,
+  "message": null
 }
+
 
 Response: 404 Not Found
 {
@@ -194,18 +201,24 @@ Request:
 Response: 201 Created
 Location: /api/v1/products/123e4567-e89b-12d3-a456-426614174000
 {
-  "id": "123e4567-e89b-12d3-a456-426614174000",
-  "name": "Notebook Dell Inspiron 15",
-  "description": "Notebook com processador Intel Core i7, 16GB RAM, SSD 512GB",
-  "price": {
-    "amount": 3500.00,
-    "currency": "BRL"
+  "data": {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "name": "Notebook Dell Inspiron 15",
+    "description": "Notebook com processador Intel Core i7, 16GB RAM, SSD 512GB",
+    "price": {
+      "amount": 3500.00,
+      "currency": "BRL"
+    },
+    "stock": 15,
+    "isActive": true,
+    "categoryId": "234e5678-e89b-12d3-a456-426614174001",
+    "createdAt": "2026-01-24T12:00:00Z"
   },
-  "stock": 15,
-  "isActive": true,
-  "categoryId": "234e5678-e89b-12d3-a456-426614174001",
-  "createdAt": "2025-01-06T10:00:00Z"
+  "succeeded": true,
+  "errors": null,
+  "message": "Created successfully"
 }
+
 
 Response: 400 Bad Request
 {
