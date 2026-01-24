@@ -15,6 +15,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrismaPrimeMarket.API", "sr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrismaPrimeMarket.CrossCutting", "src\PrismaPrimeMarket.CrossCutting\PrismaPrimeMarket.CrossCutting.csproj", "{108D5C52-564B-42C8-AF6D-5FB69C9A9BBD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{B2FA70A8-B575-4CA6-9EF7-2829DB48FC3D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrismaPrimeMarket.UnitTests", "tests\PrismaPrimeMarket.UnitTests\PrismaPrimeMarket.UnitTests.csproj", "{08AFD5D4-1206-4452-9456-AF5784FA060C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrismaPrimeMarket.IntegrationTests", "tests\PrismaPrimeMarket.IntegrationTests\PrismaPrimeMarket.IntegrationTests.csproj", "{3B58CBBA-C7C8-407C-86E3-BD803811CC2E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +50,14 @@ Global
 		{108D5C52-564B-42C8-AF6D-5FB69C9A9BBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{108D5C52-564B-42C8-AF6D-5FB69C9A9BBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{108D5C52-564B-42C8-AF6D-5FB69C9A9BBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08AFD5D4-1206-4452-9456-AF5784FA060C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08AFD5D4-1206-4452-9456-AF5784FA060C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08AFD5D4-1206-4452-9456-AF5784FA060C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08AFD5D4-1206-4452-9456-AF5784FA060C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B58CBBA-C7C8-407C-86E3-BD803811CC2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B58CBBA-C7C8-407C-86E3-BD803811CC2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B58CBBA-C7C8-407C-86E3-BD803811CC2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B58CBBA-C7C8-407C-86E3-BD803811CC2E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{5D475526-CFE3-4AA6-A8E8-BAB319201F7C} = {6942CF2A-E202-4F7A-915E-73C5B76C8BD6}
@@ -51,5 +65,7 @@ Global
 		{8C842854-93F1-4B0E-83A2-DE813A3D3818} = {6942CF2A-E202-4F7A-915E-73C5B76C8BD6}
 		{6E469A2A-782F-4D79-8D7C-8B7DD5987CFA} = {6942CF2A-E202-4F7A-915E-73C5B76C8BD6}
 		{108D5C52-564B-42C8-AF6D-5FB69C9A9BBD} = {6942CF2A-E202-4F7A-915E-73C5B76C8BD6}
+		{08AFD5D4-1206-4452-9456-AF5784FA060C} = {B2FA70A8-B575-4CA6-9EF7-2829DB48FC3D}
+		{3B58CBBA-C7C8-407C-86E3-BD803811CC2E} = {B2FA70A8-B575-4CA6-9EF7-2829DB48FC3D}
 	EndGlobalSection
 EndGlobal
