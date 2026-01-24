@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using PrismaPrimeMarket.Domain.Common;
 using PrismaPrimeMarket.Domain.Interfaces;
@@ -15,9 +16,19 @@ public abstract class BaseRepository<T>(ApplicationDbContext context) : IBaseRep
         return await _dbSet.FindAsync([id], cancellationToken);
     }
 
-    public virtual async Task<IEnumerable<T>> GetAllAsync(CancellationToken cancellationToken = default)
+    public virtual IQueryable<T> GetQuery()
     {
-        return await _dbSet.AsNoTracking().ToListAsync(cancellationToken);
+        return _dbSet.AsNoTracking();
+    }
+
+    public virtual async Task<List<T>> ExecuteQueryAsync(IQueryable<T> query, CancellationToken cancellationToken = default)
+    {
+        return await query.ToListAsync(cancellationToken);
+    }
+
+    public virtual async Task<int> CountAsync(IQueryable<T> query, CancellationToken cancellationToken = default)
+    {
+        return await query.CountAsync(cancellationToken);
     }
 
     public virtual async Task AddAsync(T entity, CancellationToken cancellationToken = default)
