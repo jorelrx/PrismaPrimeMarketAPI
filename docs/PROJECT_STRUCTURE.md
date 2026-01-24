@@ -120,9 +120,7 @@ PrismaPrimeMarketAPI/
 │   │   │   │   ├── IProductRepository.cs
 │   │   │   │   ├── IOrderRepository.cs
 │   │   │   │   └── IUnitOfWork.cs
-│   │   │   └── Services/
 │   │   ├── Specifications/
-│   │   ├── Services/
 │   │   └── Common/
 │   │       ├── BaseEntity.cs
 │   │       └── IAggregateRoot.cs

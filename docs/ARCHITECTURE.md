@@ -267,20 +267,12 @@ PrismaPrimeMarket.Domain/
 │   │   ├── IOrderRepository.cs
 │   │   ├── IUserRepository.cs
 │   │   └── IUnitOfWork.cs
-│   └── Services/
-│       ├── IEmailService.cs
-│       ├── IPaymentGateway.cs
-│       └── IStorageService.cs
 ├── Specifications/
 │   ├── ProductSpecifications/
 │   │   ├── ProductByIdSpecification.cs
 │   │   ├── ActiveProductsSpecification.cs
 │   │   └── ProductsByCategorySpecification.cs
 │   └── OrderSpecifications/
-├── Services/
-│   ├── OrderDomainService.cs
-│   ├── PricingService.cs
-│   └── InventoryService.cs
 └── Common/
     ├── BaseEntity.cs
     ├── IAggregateRoot.cs
