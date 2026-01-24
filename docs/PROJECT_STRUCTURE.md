@@ -83,12 +83,6 @@ PrismaPrimeMarketAPI/
 │   │   │   ├── ProductProfile.cs
 │   │   │   ├── OrderProfile.cs
 │   │   │   └── UserProfile.cs
-│   │   ├── Interfaces/
-│   │   │   ├── IProductService.cs
-│   │   │   └── IOrderService.cs
-│   │   ├── Services/
-│   │   │   ├── ProductService.cs
-│   │   │   └── OrderService.cs
 │   │   ├── Validators/
 │   │   └── Common/
 │   │       ├── Behaviors/

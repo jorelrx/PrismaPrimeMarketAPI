@@ -134,14 +134,6 @@ PrismaPrimeMarket.Application/
 │   ├── ProductProfile.cs
 │   ├── OrderProfile.cs
 │   └── UserProfile.cs
-├── Interfaces/
-│   ├── IProductService.cs
-│   ├── IOrderService.cs
-│   └── IPaymentService.cs
-├── Services/
-│   ├── ProductService.cs
-│   ├── OrderService.cs
-│   └── PaymentService.cs
 ├── Validators/
 │   ├── ProductValidators/
 │   └── OrderValidators/
