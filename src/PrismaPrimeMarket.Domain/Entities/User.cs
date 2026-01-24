@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Identity;
 using PrismaPrimeMarket.Domain.Common;
 using PrismaPrimeMarket.Domain.Events;
 using PrismaPrimeMarket.Domain.Exceptions;
-using PrismaPrimeMarket.Domain.Interfaces;
 using PrismaPrimeMarket.Domain.ValueObjects;
 
 namespace PrismaPrimeMarket.Domain.Entities;
@@ -45,10 +44,10 @@ public class User : IdentityUser<Guid>, IBaseEntity, IAggregateRoot
 
     // Construtor privado usado pelo factory method
     private User(
-        string email,
         string userName,
         string firstName,
-        string lastName,
+        string? email = null,
+        string? lastName = null,
         CPF? cpf = null,
         PhoneNumber? phone = null,
         DateTime? birthDate = null)
@@ -57,14 +56,14 @@ public class User : IdentityUser<Guid>, IBaseEntity, IAggregateRoot
         Email = email;
         UserName = userName;
         FirstName = firstName;
-        LastName = lastName;
+        LastName = lastName ?? string.Empty;
         CPF = cpf;
         Phone = phone;
         BirthDate = birthDate;
         CreatedAt = DateTime.UtcNow;
-        IsActive = false; // Aguardando confirmação de e-mail
+        IsActive = true; // Ativo por padrão quando não requer confirmação de e-mail
         IsDeleted = false;
-        EmailConfirmed = false;
+        EmailConfirmed = string.IsNullOrEmpty(email); // Confirmado se não houver e-mail
         PhoneNumberConfirmed = false;
         TwoFactorEnabled = false;
         LockoutEnabled = true;
@@ -74,25 +73,30 @@ public class User : IdentityUser<Guid>, IBaseEntity, IAggregateRoot
     /// Factory method para criar um novo usuário
     /// </summary>
     public static User Create(
-        string email,
         string userName,
         string firstName,
-        string lastName,
+        string? email = null,
+        string? lastName = null,
         CPF? cpf = null,
         PhoneNumber? phone = null,
         DateTime? birthDate = null)
     {
         // Validações de domínio
-        ValidateEmail(email);
         ValidateUserName(userName);
         ValidateName(firstName, nameof(firstName));
-        ValidateName(lastName, nameof(lastName));
+        
+        if (!string.IsNullOrEmpty(email))
+            ValidateEmail(email);
+        
+        if (!string.IsNullOrEmpty(lastName))
+            ValidateName(lastName, nameof(lastName));
+        
         ValidateBirthDate(birthDate);
 
-        var user = new User(email, userName, firstName, lastName, cpf, phone, birthDate);
+        var user = new User(userName, firstName, email, lastName, cpf, phone, birthDate);
         
         // Adiciona evento de domínio
-        user.AddDomainEvent(new UserRegisteredEvent(user.Id, user.Email!, user.UserName!));
+        user.AddDomainEvent(new UserRegisteredEvent(user.Id, user.Email ?? string.Empty, user.UserName!));
         
         return user;
     }
@@ -211,9 +215,6 @@ public class User : IdentityUser<Guid>, IBaseEntity, IAggregateRoot
 
     private static void ValidateEmail(string email)
     {
-        if (string.IsNullOrWhiteSpace(email))
-            throw new DomainException("O e-mail não pode ser vazio");
-
         // A validação completa será feita pelo Value Object Email quando usado
         if (email.Length > 254)
             throw new DomainException("O e-mail não pode ter mais de 254 caracteres");
