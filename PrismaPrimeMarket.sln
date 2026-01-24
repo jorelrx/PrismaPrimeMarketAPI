@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6942CF2A-E202-4F7A-915E-73C5B76C8BD6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrismaPrimeMarket.Domain", "src\PrismaPrimeMarket.Domain\PrismaPrimeMarket.Domain.csproj", "{5D475526-CFE3-4AA6-A8E8-BAB319201F7C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrismaPrimeMarket.Application", "src\PrismaPrimeMarket.Application\PrismaPrimeMarket.Application.csproj", "{DE8B00DB-44F0-4CE5-9F46-798F0ADEC908}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrismaPrimeMarket.Infrastructure", "src\PrismaPrimeMarket.Infrastructure\PrismaPrimeMarket.Infrastructure.csproj", "{8C842854-93F1-4B0E-83A2-DE813A3D3818}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrismaPrimeMarket.API", "src\PrismaPrimeMarket.API\PrismaPrimeMarket.API.csproj", "{6E469A2A-782F-4D79-8D7C-8B7DD5987CFA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PrismaPrimeMarket.CrossCutting", "src\PrismaPrimeMarket.CrossCutting\PrismaPrimeMarket.CrossCutting.csproj", "{108D5C52-564B-42C8-AF6D-5FB69C9A9BBD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5D475526-CFE3-4AA6-A8E8-BAB319201F7C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D475526-CFE3-4AA6-A8E8-BAB319201F7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D475526-CFE3-4AA6-A8E8-BAB319201F7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D475526-CFE3-4AA6-A8E8-BAB319201F7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE8B00DB-44F0-4CE5-9F46-798F0ADEC908}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE8B00DB-44F0-4CE5-9F46-798F0ADEC908}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE8B00DB-44F0-4CE5-9F46-798F0ADEC908}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE8B00DB-44F0-4CE5-9F46-798F0ADEC908}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C842854-93F1-4B0E-83A2-DE813A3D3818}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C842854-93F1-4B0E-83A2-DE813A3D3818}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C842854-93F1-4B0E-83A2-DE813A3D3818}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C842854-93F1-4B0E-83A2-DE813A3D3818}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E469A2A-782F-4D79-8D7C-8B7DD5987CFA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E469A2A-782F-4D79-8D7C-8B7DD5987CFA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E469A2A-782F-4D79-8D7C-8B7DD5987CFA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E469A2A-782F-4D79-8D7C-8B7DD5987CFA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{108D5C52-564B-42C8-AF6D-5FB69C9A9BBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{108D5C52-564B-42C8-AF6D-5FB69C9A9BBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{108D5C52-564B-42C8-AF6D-5FB69C9A9BBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{108D5C52-564B-42C8-AF6D-5FB69C9A9BBD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5D475526-CFE3-4AA6-A8E8-BAB319201F7C} = {6942CF2A-E202-4F7A-915E-73C5B76C8BD6}
+		{DE8B00DB-44F0-4CE5-9F46-798F0ADEC908} = {6942CF2A-E202-4F7A-915E-73C5B76C8BD6}
+		{8C842854-93F1-4B0E-83A2-DE813A3D3818} = {6942CF2A-E202-4F7A-915E-73C5B76C8BD6}
+		{6E469A2A-782F-4D79-8D7C-8B7DD5987CFA} = {6942CF2A-E202-4F7A-915E-73C5B76C8BD6}
+		{108D5C52-564B-42C8-AF6D-5FB69C9A9BBD} = {6942CF2A-E202-4F7A-915E-73C5B76C8BD6}
+	EndGlobalSection
+EndGlobal
