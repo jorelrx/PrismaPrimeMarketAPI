@@ -1,0 +1,164 @@
+name: Code Quality Analysis
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly on Sundays
+  workflow_dispatch:
+
+env:
+  DOTNET_VERSION: '8.0.x'
+
+jobs:
+  analyze-csharp:
+    name: C# Code Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build with code analysis
+      run: |
+        dotnet build --configuration Release --no-restore \
+          /p:EnableNETAnalyzers=true \
+          /p:AnalysisLevel=latest \
+          /p:EnforceCodeStyleInBuild=true \
+          /p:TreatWarningsAsErrors=false
+    
+    - name: Install security analyzers
+      run: |
+        dotnet add package Microsoft.CodeAnalysis.NetAnalyzers
+        dotnet add package SecurityCodeScan.VS2019
+      continue-on-error: true
+    
+    - name: Run security analysis
+      run: dotnet build --no-restore /p:RunAnalyzersDuringBuild=true
+      continue-on-error: true
+
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Dependency Review
+      uses: actions/dependency-review-action@v4
+      with:
+        fail-on-severity: high
+
+  codeql-analysis:
+    name: CodeQL Security Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'csharp' ]
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v3
+      with:
+        languages: ${{ matrix.language }}
+        queries: +security-and-quality
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+    
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v3
+      with:
+        category: "/language:${{ matrix.language }}"
+
+  dotnet-format:
+    name: .NET Format Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+    - name: Restore dependencies
+      run: dotnet restore
+    
+    - name: Check code formatting
+      run: |
+        dotnet format --verify-no-changes --verbosity diagnostic
+        if [ $? -ne 0 ]; then
+          echo "❌ Code formatting issues detected!"
+          echo "Run 'dotnet format' to fix formatting issues."
+          exit 1
+        fi
+        echo "✅ Code formatting is correct!"
+
+  metrics:
+    name: Code Metrics
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+    
+    - name: Install code metrics tool
+      run: dotnet tool install --global dotnet-code-metrics
+    
+    - name: Calculate code metrics
+      run: |
+        echo "## Code Metrics Report" > metrics.md
+        echo "" >> metrics.md
+        echo "Generated on: $(date)" >> metrics.md
+        echo "" >> metrics.md
+        
+        # Add custom metrics analysis here when projects are created
+        echo "Metrics will be available once the solution is fully scaffolded." >> metrics.md
+    
+    - name: Upload metrics report
+      uses: actions/upload-artifact@v4
+      with:
+        name: code-metrics
+        path: metrics.md
+        retention-days: 30

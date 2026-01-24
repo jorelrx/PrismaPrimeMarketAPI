@@ -2,6 +2,9 @@
 
 [![.NET](https://img.shields.io/badge/.NET-8.0-purple)](https://dotnet.microsoft.com/)
 [![C#](https://img.shields.io/badge/C%23-12.0-blue)](https://docs.microsoft.com/en-us/dotnet/csharp/)
+[![CI Pipeline](https://github.com/jorelrx/PrismaPrimeMarketAPI/actions/workflows/ci.yml/badge.svg)](https://github.com/jorelrx/PrismaPrimeMarketAPI/actions/workflows/ci.yml)
+[![Code Quality](https://github.com/jorelrx/PrismaPrimeMarketAPI/actions/workflows/code-quality.yml/badge.svg)](https://github.com/jorelrx/PrismaPrimeMarketAPI/actions/workflows/code-quality.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## 📋 Sobre o Projeto
 
@@ -189,11 +192,18 @@ dotnet test --filter Category=E2E
 
 ## 📚 Documentação Adicional
 
+### Geral
 - [Arquitetura Detalhada](docs/ARCHITECTURE.md)
 - [Documentação da API](docs/API.md)
 - [Guia de Contribuição](docs/CONTRIBUTING.md)
 - [Integração com IA (PostgreSQL + pgvector)](docs/AI_INTEGRATION.md)
 - [Swagger UI](https://localhost:5001/swagger) (quando a aplicação estiver rodando)
+
+### CI/CD e DevOps
+- [Implementação CI/CD](docs/CI_CD_IMPLEMENTATION.md) - Visão geral do pipeline
+- [Guia de Configuração CI/CD](docs/CI_CD_SETUP.md) - Setup passo a passo
+- [Quick Reference](docs/QUICK_REFERENCE.md) - Comandos úteis
+- [Workflows README](.github/workflows/README.md) - Documentação dos workflows
 
 ## 🎯 Princípios e Padrões Aplicados
 
