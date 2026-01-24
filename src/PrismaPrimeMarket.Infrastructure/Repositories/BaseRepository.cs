@@ -6,7 +6,7 @@ using PrismaPrimeMarket.Infrastructure.Data.Context;
 
 namespace PrismaPrimeMarket.Infrastructure.Repositories;
 
-public abstract class BaseRepository<T>(ApplicationDbContext context) : IBaseRepository<T> where T : BaseEntity, IAggregateRoot
+public abstract class BaseRepository<T>(ApplicationDbContext context) : IBaseRepository<T> where T : class, IBaseEntity, IAggregateRoot
 {
     protected readonly ApplicationDbContext _context = context;
     protected readonly DbSet<T> _dbSet = context.Set<T>();

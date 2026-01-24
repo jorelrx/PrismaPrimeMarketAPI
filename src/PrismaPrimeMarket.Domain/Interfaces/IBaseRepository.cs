@@ -3,7 +3,7 @@ using PrismaPrimeMarket.Domain.Common;
 
 namespace PrismaPrimeMarket.Domain.Interfaces;
 
-public interface IBaseRepository<T> where T : BaseEntity, IAggregateRoot
+public interface IBaseRepository<T> where T : class, IBaseEntity, IAggregateRoot
 {
     Task<T?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
     IQueryable<T> GetQuery();

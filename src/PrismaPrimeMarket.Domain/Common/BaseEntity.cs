@@ -1,8 +1,9 @@
 using System.ComponentModel.DataAnnotations.Schema;
+using PrismaPrimeMarket.Domain.Interfaces;
 
 namespace PrismaPrimeMarket.Domain.Common;
 
-public abstract class BaseEntity
+public abstract class BaseEntity : IBaseEntity
 {
     public Guid Id { get; protected set; }
     public DateTime CreatedAt { get; private set; }
