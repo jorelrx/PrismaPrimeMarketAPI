@@ -9,7 +9,7 @@ namespace PrismaPrimeMarket.Application.UseCases.Users.Commands.UpdateUserProfil
 public record UpdateUserProfileCommand(
     Guid UserId,
     string FirstName,
-    string LastName,
+    string? LastName = null,
     string? CPF = null,
     string? PhoneNumber = null,
     DateTime? BirthDate = null

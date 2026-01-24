@@ -22,6 +22,17 @@ public class UserProfile : Profile
         // DTOs → Commands
         CreateMap<CreateUserDto, RegisterUserCommand>();
         CreateMap<UpdateUserProfileDto, UpdateUserProfileCommand>()
-            .ForMember(dest => dest.UserId, opt => opt.Ignore()); // UserId virá da rota
+            .ConstructUsing((dto, context) =>
+            {
+                var userId = context.Items.ContainsKey("UserId") ? (Guid)context.Items["UserId"] : Guid.Empty;
+                return new UpdateUserProfileCommand(
+                    userId,
+                    dto.FirstName,
+                    dto.LastName,
+                    dto.CPF,
+                    dto.PhoneNumber,
+                    dto.BirthDate
+                );
+            });
     }
 }

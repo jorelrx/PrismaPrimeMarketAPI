@@ -15,7 +15,7 @@ public class User : IdentityUser<Guid>, IBaseEntity, IAggregateRoot
 {
     // Propriedades de domínio adicionais
     public string FirstName { get; private set; }
-    public string LastName { get; private set; }
+    public string? LastName { get; private set; }
     public CPF? CPF { get; private set; }
     public PhoneNumber? Phone { get; private set; }
     public DateTime? BirthDate { get; private set; }
@@ -106,13 +106,14 @@ public class User : IdentityUser<Guid>, IBaseEntity, IAggregateRoot
     /// </summary>
     public void UpdateProfile(
         string firstName,
-        string lastName,
+        string? lastName = null,
         CPF? cpf = null,
         PhoneNumber? phone = null,
         DateTime? birthDate = null)
     {
         ValidateName(firstName, nameof(firstName));
-        ValidateName(lastName, nameof(lastName));
+        if (!string.IsNullOrWhiteSpace(lastName))
+            ValidateName(lastName, nameof(lastName));
         ValidateBirthDate(birthDate);
 
         FirstName = firstName;

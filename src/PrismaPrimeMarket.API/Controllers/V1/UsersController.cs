@@ -1,6 +1,7 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using PrismaPrimeMarket.Application.Common.Models;
 using PrismaPrimeMarket.Application.DTOs.User;
 using PrismaPrimeMarket.Application.UseCases.Users.Commands.RegisterUser;
 using PrismaPrimeMarket.Application.UseCases.Users.Commands.UpdateUserProfile;
@@ -33,7 +34,7 @@ public class UsersController : BaseController
     /// <response code="400">Dados inválidos</response>
     /// <response code="409">Usuário já existe</response>
     [HttpPost]
-    [ProducesResponseType(typeof(UserDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(Response<UserDto>), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<IActionResult> Register(
@@ -44,10 +45,12 @@ public class UsersController : BaseController
 
         var result = await Mediator.Send(command, cancellationToken);
 
+        var response = Response<UserDto>.Created(result, path: HttpContext.Request.Path);
+
         return CreatedAtAction(
             nameof(GetById),
             new { id = result.Id },
-            result
+            response
         );
     }
 
@@ -60,7 +63,7 @@ public class UsersController : BaseController
     /// <response code="200">Usuário encontrado</response>
     /// <response code="404">Usuário não encontrado</response>
     [HttpGet("{id:guid}")]
-    [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Response<UserDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetById(
         Guid id,
@@ -69,7 +72,9 @@ public class UsersController : BaseController
         var query = new GetUserByIdQuery(id);
         var result = await Mediator.Send(query, cancellationToken);
 
-        return Ok(result);
+        var response = Response<UserDto>.Retrieved(result, path: HttpContext.Request.Path);
+
+        return Ok(response);
     }
 
     /// <summary>
@@ -79,13 +84,15 @@ public class UsersController : BaseController
     /// <returns>Lista de usuários</returns>
     /// <response code="200">Lista de usuários</response>
     [HttpGet]
-    [ProducesResponseType(typeof(List<UserDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Response<List<UserDto>>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
     {
         var query = new GetUsersQuery();
         var result = await Mediator.Send(query, cancellationToken);
 
-        return Ok(result);
+        var response = Response<List<UserDto>>.Retrieved(result, path: HttpContext.Request.Path);
+
+        return Ok(response);
     }
 
     /// <summary>
@@ -99,7 +106,7 @@ public class UsersController : BaseController
     /// <response code="400">Dados inválidos</response>
     /// <response code="404">Usuário não encontrado</response>
     [HttpPut("{id:guid}/profile")]
-    [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Response<UserDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> UpdateProfile(
@@ -107,11 +114,12 @@ public class UsersController : BaseController
         [FromBody] UpdateUserProfileDto dto,
         CancellationToken cancellationToken)
     {
-        var command = _mapper.Map<UpdateUserProfileCommand>(dto);
-        command = command with { UserId = id }; // Define o UserId da rota
+        var command = _mapper.Map<UpdateUserProfileCommand>(dto, opts => opts.Items["UserId"] = id);
 
         var result = await Mediator.Send(command, cancellationToken);
 
-        return Ok(result);
+        var response = Response<UserDto>.Updated(result, path: HttpContext.Request.Path);
+
+        return Ok(response);
     }
 }
