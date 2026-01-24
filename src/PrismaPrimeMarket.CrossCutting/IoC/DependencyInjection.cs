@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PrismaPrimeMarket.Domain.Interfaces;
+using PrismaPrimeMarket.Infrastructure.Data;
 using PrismaPrimeMarket.Infrastructure.Data.Context;
 
 namespace PrismaPrimeMarket.CrossCutting.IoC;
@@ -13,6 +15,8 @@ public static class DependencyInjection
             options.UseNpgsql(
                 configuration.GetConnectionString("DefaultConnection"),
                 b => b.MigrationsAssembly("PrismaPrimeMarket.Infrastructure")));
+
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         return services;
     }
