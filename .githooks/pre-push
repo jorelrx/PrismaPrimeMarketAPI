@@ -1,0 +1,21 @@
+#!/bin/sh
+# Pre-push hook para rodar testes antes do push
+
+echo "🔍 Executando testes antes do push..."
+
+# Roda os testes
+dotnet test --no-restore --verbosity minimal
+
+# Captura o código de saída
+TEST_EXIT_CODE=$?
+
+# Se os testes falharem, impede o push
+if [ $TEST_EXIT_CODE -ne 0 ]; then
+    echo ""
+    echo "❌ PUSH BLOQUEADO: Os testes falharam!"
+    echo "   Corrija os erros antes de fazer push."
+    exit 1
+fi
+
+echo "✅ Todos os testes passaram! Prosseguindo com o push..."
+exit 0

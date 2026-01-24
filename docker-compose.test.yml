@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # Banco de dados PostgreSQL para testes de integração
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: PrismaPrimeMarketDB_Test
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - test-network
+
+  # Runner de testes
+  tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: test
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Testing
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=PrismaPrimeMarketDB_Test;Username=postgres;Password=postgres
+    volumes:
+      - ./testresults:/testresults
+    networks:
+      - test-network
+
+networks:
+  test-network:
+    driver: bridge
