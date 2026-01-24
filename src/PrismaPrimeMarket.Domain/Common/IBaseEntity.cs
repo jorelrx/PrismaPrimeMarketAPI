@@ -1,6 +1,4 @@
-using PrismaPrimeMarket.Domain.Common;
-
-namespace PrismaPrimeMarket.Domain.Interfaces;
+namespace PrismaPrimeMarket.Domain.Common;
 
 /// <summary>
 /// Interface que define o contrato para entidades base do domínio

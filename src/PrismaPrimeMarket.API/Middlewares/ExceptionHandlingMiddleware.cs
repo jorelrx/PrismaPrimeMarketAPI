@@ -38,9 +38,9 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
                 response.StatusCode = (int)HttpStatusCode.BadRequest;
                 responseModel = Response<string>.BadRequest(exception.Message, path: path);
                 break;
-            case ValidationException ex:
+            case FluentValidation.ValidationException validationException:
                 response.StatusCode = (int)HttpStatusCode.BadRequest;
-                var errors = ex.Errors.SelectMany(x => x.Value).ToArray();
+                var errors = validationException.Errors.Select(e => e.ErrorMessage).ToArray();
                 responseModel = Response<string>.ValidationError(errors, path: path);
                 break;
             case NotFoundException:

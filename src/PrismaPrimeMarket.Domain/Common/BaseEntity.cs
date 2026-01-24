@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations.Schema;
-using PrismaPrimeMarket.Domain.Interfaces;
 
 namespace PrismaPrimeMarket.Domain.Common;
 
