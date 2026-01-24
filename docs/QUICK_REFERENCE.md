@@ -389,6 +389,227 @@ dotnet build
 
 ---
 
+## 📤 Padrão de Response Pattern
+
+### Response<T> - Estrutura
+
+```csharp
+public class Response<T>
+{
+    public T? Data { get; set; }
+    public bool Succeeded { get; set; }
+    public string[]? Errors { get; set; }
+    public string Message { get; set; }
+    public ResponseType Type { get; set; }
+    public DateTime Timestamp { get; set; }
+    public string? Path { get; set; }
+}
+```
+
+### ResponseType (Enum)
+
+```csharp
+public enum ResponseType
+{
+    // Success
+    Success, Created, Updated, Deleted, Retrieved,
+    
+    // Errors
+    NotFound, ValidationError, BadRequest, 
+    Unauthorized, Forbidden, Conflict, InternalServerError
+}
+```
+
+### Factory Methods
+
+```csharp
+// ✅ Sucesso
+Response<ProductDto>.Success(data, "Mensagem opcional");
+Response<ProductDto>.Created(data);
+Response<ProductDto>.Updated(data);
+Response<ProductDto>.Deleted();
+Response<ProductDto>.Retrieved(data);
+
+// ❌ Erro
+Response<ProductDto>.NotFound("Recurso não encontrado");
+Response<ProductDto>.ValidationError(new[] { "Erro 1", "Erro 2" });
+Response<ProductDto>.BadRequest("Requisição inválida");
+Response<ProductDto>.Unauthorized();
+Response<ProductDto>.Forbidden();
+Response<ProductDto>.Conflict("Conflito detectado");
+Response<ProductDto>.InternalError("Erro interno");
+```
+
+### PagedResponse<T> - Estrutura
+
+```csharp
+public class PagedResponse<T> : Response<T>
+{
+    public int PageNumber { get; set; }
+    public int PageSize { get; set; }
+    public int TotalRecords { get; set; }
+    public int TotalPages { get; set; }
+    public bool HasPreviousPage { get; }
+    public bool HasNextPage { get; }
+}
+
+// Factory
+PagedResponse<IEnumerable<ProductDto>>.Create(
+    data, 
+    pageNumber: 1, 
+    pageSize: 20, 
+    totalRecords: 95
+);
+```
+
+### ResponseMessages (Constantes)
+
+```csharp
+public static class ResponseMessages
+{
+    // Success
+    public const string Success = "Operação realizada com sucesso";
+    public const string Created = "Recurso criado com sucesso";
+    public const string Updated = "Recurso atualizado com sucesso";
+    public const string Deleted = "Recurso excluído com sucesso";
+    public const string Retrieved = "Recurso recuperado com sucesso";
+    public const string ListRetrieved = "Lista recuperada com sucesso";
+    
+    // Errors
+    public const string NotFound = "Recurso não encontrado";
+    public const string ValidationError = "Erro de validação nos dados fornecidos";
+    public const string BadRequest = "Requisição inválida";
+    public const string Unauthorized = "Não autorizado para acessar este recurso";
+    public const string Forbidden = "Acesso negado a este recurso";
+    public const string Conflict = "Conflito detectado ao processar a requisição";
+    public const string InternalServerError = "Erro interno no servidor";
+}
+```
+
+### Uso nos Handlers
+
+```csharp
+// Command Handler - Criar
+public async Task<Response<ProductDto>> Handle(
+    CreateProductCommand request, 
+    CancellationToken cancellationToken)
+{
+    // Lógica de criação...
+    var product = Product.Create(...);
+    await _repository.AddAsync(product);
+    await _unitOfWork.CommitAsync();
+    
+    var dto = _mapper.Map<ProductDto>(product);
+    return Response<ProductDto>.Created(dto);
+}
+
+// Query Handler - GetById
+public async Task<Response<ProductDto>> Handle(
+    GetProductByIdQuery request,
+    CancellationToken cancellationToken)
+{
+    var product = await _repository.GetByIdAsync(request.Id);
+    
+    if (product == null)
+        return Response<ProductDto>.NotFound($"Produto {request.Id} não encontrado");
+    
+    var dto = _mapper.Map<ProductDto>(product);
+    return Response<ProductDto>.Retrieved(dto);
+}
+
+// Query Handler - GetList (Paginado)
+public async Task<PagedResponse<IEnumerable<ProductDto>>> Handle(
+    GetProductListQuery request,
+    CancellationToken cancellationToken)
+{
+    var query = _repository.GetQuery();
+    var totalRecords = await _repository.CountAsync(query);
+    
+    query = query
+        .Skip((request.PageNumber - 1) * request.PageSize)
+        .Take(request.PageSize);
+    
+    var products = await _repository.ExecuteQueryAsync(query);
+    var dtos = _mapper.Map<IEnumerable<ProductDto>>(products);
+    
+    return PagedResponse<IEnumerable<ProductDto>>.Create(
+        dtos,
+        request.PageNumber,
+        request.PageSize,
+        totalRecords
+    );
+}
+```
+
+### Uso no Middleware (ExceptionHandlingMiddleware)
+
+```csharp
+catch (NotFoundException ex)
+{
+    context.Response.StatusCode = StatusCodes.Status404NotFound;
+    var response = Response<object>.NotFound(ex.Message);
+    await context.Response.WriteAsJsonAsync(response);
+}
+catch (ValidationException ex)
+{
+    context.Response.StatusCode = StatusCodes.Status400BadRequest;
+    var response = Response<object>.ValidationError(
+        ex.Errors.Select(e => e.ErrorMessage).ToArray()
+    );
+    await context.Response.WriteAsJsonAsync(response);
+}
+```
+
+### Exemplo JSON - Sucesso
+
+```json
+{
+  "data": { "id": "123", "name": "Produto" },
+  "succeeded": true,
+  "errors": null,
+  "message": "Recurso criado com sucesso",
+  "type": "Created",
+  "timestamp": "2026-01-24T10:30:00Z",
+  "path": "/api/v1/products"
+}
+```
+
+### Exemplo JSON - Erro
+
+```json
+{
+  "data": null,
+  "succeeded": false,
+  "errors": ["Nome é obrigatório", "Preço inválido"],
+  "message": "Erro de validação nos dados fornecidos",
+  "type": "ValidationError",
+  "timestamp": "2026-01-24T10:30:00Z",
+  "path": "/api/v1/products"
+}
+```
+
+### Exemplo JSON - Paginado
+
+```json
+{
+  "data": [ /* array de objetos */ ],
+  "succeeded": true,
+  "errors": null,
+  "message": "Lista recuperada com sucesso",
+  "type": "Retrieved",
+  "timestamp": "2026-01-24T10:30:00Z",
+  "path": "/api/v1/products",
+  "pageNumber": 1,
+  "pageSize": 20,
+  "totalRecords": 95,
+  "totalPages": 5,
+  "hasPreviousPage": false,
+  "hasNextPage": true
+}
+```
+
+---
+
 **Tip:** Add aliases to your shell profile for frequently used commands!
 
 ```bash

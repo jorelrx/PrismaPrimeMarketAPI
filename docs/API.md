@@ -11,7 +11,218 @@ Development: https://localhost:5001/api/v1
 Production: https://api.prismaprime.market.com/api/v1
 ```
 
-## 🔐 Autenticação
+## � Padrão de Resposta (Response Pattern)
+
+Todas as respostas da API seguem um padrão consistente usando as classes `Response<T>` e `PagedResponse<T>`.
+
+### Response<T>
+
+Estrutura padrão para respostas simples:
+
+```json
+{
+  "data": { /* objeto ou valor de retorno */ },
+  "succeeded": true,
+  "errors": null,
+  "message": "Operação realizada com sucesso",
+  "type": "Success",
+  "timestamp": "2026-01-24T10:30:00Z",
+  "path": "/api/v1/products/123"
+}
+```
+
+#### Propriedades:
+- **data** (T): Dados retornados pela operação (null em caso de erro)
+- **succeeded** (bool): Indica se a operação foi bem-sucedida
+- **errors** (string[]): Array de mensagens de erro (null em caso de sucesso)
+- **message** (string): Mensagem descritiva da operação
+- **type** (ResponseType): Tipo da resposta (enum)
+- **timestamp** (DateTime): Data/hora da resposta em UTC
+- **path** (string): Caminho da requisição que gerou a resposta
+
+#### ResponseType (Enum)
+
+Tipos de resposta disponíveis:
+
+**Success Responses:**
+- `Success` - Operação genérica bem-sucedida
+- `Created` - Recurso criado com sucesso (HTTP 201)
+- `Updated` - Recurso atualizado com sucesso
+- `Deleted` - Recurso excluído com sucesso
+- `Retrieved` - Recurso recuperado com sucesso
+
+**Error Responses:**
+- `NotFound` - Recurso não encontrado (HTTP 404)
+- `ValidationError` - Erro de validação (HTTP 400)
+- `BadRequest` - Requisição inválida (HTTP 400)
+- `Unauthorized` - Não autorizado (HTTP 401)
+- `Forbidden` - Acesso negado (HTTP 403)
+- `Conflict` - Conflito de dados (HTTP 409)
+- `InternalServerError` - Erro interno (HTTP 500)
+
+### PagedResponse<T>
+
+Estrutura para respostas paginadas (listas):
+
+```json
+{
+  "data": [ /* array de objetos */ ],
+  "succeeded": true,
+  "errors": null,
+  "message": "Lista recuperada com sucesso",
+  "type": "Retrieved",
+  "timestamp": "2026-01-24T10:30:00Z",
+  "path": "/api/v1/products",
+  "pageNumber": 1,
+  "pageSize": 20,
+  "totalRecords": 95,
+  "totalPages": 5,
+  "hasPreviousPage": false,
+  "hasNextPage": true
+}
+```
+
+#### Propriedades Adicionais (Paginação):
+- **pageNumber** (int): Página atual
+- **pageSize** (int): Número de itens por página
+- **totalRecords** (int): Total de registros disponíveis
+- **totalPages** (int): Total de páginas calculadas
+- **hasPreviousPage** (bool): Indica se existe página anterior
+- **hasNextPage** (bool): Indica se existe próxima página
+
+### Exemplos de Respostas
+
+#### Sucesso - Criar Recurso (201 Created)
+```json
+{
+  "data": {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "name": "Novo Produto",
+    "price": 150.00
+  },
+  "succeeded": true,
+  "errors": null,
+  "message": "Recurso criado com sucesso",
+  "type": "Created",
+  "timestamp": "2026-01-24T10:30:00Z",
+  "path": "/api/v1/products"
+}
+```
+
+#### Sucesso - Atualizar Recurso (200 OK)
+```json
+{
+  "data": {
+    "id": "123e4567-e89b-12d3-a456-426614174000",
+    "name": "Produto Atualizado",
+    "price": 175.00
+  },
+  "succeeded": true,
+  "errors": null,
+  "message": "Recurso atualizado com sucesso",
+  "type": "Updated",
+  "timestamp": "2026-01-24T10:31:00Z",
+  "path": "/api/v1/products/123e4567-e89b-12d3-a456-426614174000"
+}
+```
+
+#### Sucesso - Deletar Recurso (200 OK)
+```json
+{
+  "data": null,
+  "succeeded": true,
+  "errors": null,
+  "message": "Recurso excluído com sucesso",
+  "type": "Deleted",
+  "timestamp": "2026-01-24T10:32:00Z",
+  "path": "/api/v1/products/123e4567-e89b-12d3-a456-426614174000"
+}
+```
+
+#### Erro - Recurso Não Encontrado (404 Not Found)
+```json
+{
+  "data": null,
+  "succeeded": false,
+  "errors": null,
+  "message": "Recurso com ID 123e4567-e89b-12d3-a456-426614174000 não encontrado",
+  "type": "NotFound",
+  "timestamp": "2026-01-24T10:33:00Z",
+  "path": "/api/v1/products/123e4567-e89b-12d3-a456-426614174000"
+}
+```
+
+#### Erro - Validação (400 Bad Request)
+```json
+{
+  "data": null,
+  "succeeded": false,
+  "errors": [
+    "O campo 'Name' é obrigatório",
+    "O campo 'Price' deve ser maior que zero",
+    "O campo 'CategoryId' deve ser um GUID válido"
+  ],
+  "message": "Erro de validação nos dados fornecidos",
+  "type": "ValidationError",
+  "timestamp": "2026-01-24T10:34:00Z",
+  "path": "/api/v1/products"
+}
+```
+
+#### Erro - Conflito (409 Conflict)
+```json
+{
+  "data": null,
+  "succeeded": false,
+  "errors": null,
+  "message": "Já existe um produto com este nome",
+  "type": "Conflict",
+  "timestamp": "2026-01-24T10:35:00Z",
+  "path": "/api/v1/products"
+}
+```
+
+#### Erro - Não Autorizado (401 Unauthorized)
+```json
+{
+  "data": null,
+  "succeeded": false,
+  "errors": null,
+  "message": "Token de autenticação inválido ou expirado",
+  "type": "Unauthorized",
+  "timestamp": "2026-01-24T10:36:00Z",
+  "path": "/api/v1/products"
+}
+```
+
+### Factory Methods
+
+A classe `Response<T>` fornece métodos factory para facilitar a criação de respostas:
+
+```csharp
+// Sucesso
+Response<ProductDto>.Success(data, "Mensagem customizada", "/api/path");
+Response<ProductDto>.Created(data);
+Response<ProductDto>.Updated(data);
+Response<ProductDto>.Deleted();
+Response<ProductDto>.Retrieved(data);
+
+// Erro
+Response<ProductDto>.NotFound("Produto não encontrado");
+Response<ProductDto>.ValidationError(errors);
+Response<ProductDto>.BadRequest("Requisição inválida");
+Response<ProductDto>.Unauthorized();
+Response<ProductDto>.Forbidden();
+Response<ProductDto>.Conflict("Conflito detectado");
+Response<ProductDto>.InternalError("Erro interno");
+
+// Paginado
+PagedResponse<IEnumerable<ProductDto>>.Create(data, pageNumber, pageSize, totalRecords);
+```
+
+---
+
+## �🔐 Autenticação
 
 A API utiliza autenticação baseada em **JWT (JSON Web Tokens)**. Para acessar endpoints protegidos, inclua o token no header:
 

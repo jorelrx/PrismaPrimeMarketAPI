@@ -114,6 +114,8 @@ CI_CD_FLOWCHART.md        → Conventional Commits
 - **DDD** → [ARCHITECTURE.md](ARCHITECTURE.md)
 - **SOLID** → [ARCHITECTURE.md](ARCHITECTURE.md)
 - **Design Patterns** → [ARCHITECTURE.md](ARCHITECTURE.md)
+- **CQRS** → [ARCHITECTURE.md](ARCHITECTURE.md) + [QUICK_REFERENCE.md](QUICK_REFERENCE.md)
+- **Response Pattern** → [API.md](API.md#-padrão-de-resposta-response-pattern) + [QUICK_REFERENCE.md](QUICK_REFERENCE.md#-padrão-de-response-pattern)
 - **PostgreSQL + pgvector** → [AI_INTEGRATION.md](AI_INTEGRATION.md)
 - **GitHub Actions** → [CI_CD_IMPLEMENTATION.md](CI_CD_IMPLEMENTATION.md)
 - **Conventional Commits** → [CI_CD_FLOWCHART.md](CI_CD_FLOWCHART.md)

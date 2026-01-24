@@ -144,9 +144,17 @@ PrismaPrimeMarket.Application/
     ├── Exceptions/
     │   ├── ValidationException.cs
     │   └── NotFoundException.cs
+    ├── Messaging/
+    │   ├── ICommand.cs
+    │   ├── IQuery.cs
+    │   ├── ICommandHandler.cs
+    │   └── IQueryHandler.cs
     └── Models/
-        ├── PaginatedList.cs
-        └── Result.cs
+        ├── Response.cs
+        ├── PagedResponse.cs
+        ├── ResponseType.cs
+        ├── ResponseMessages.cs
+        └── PaginationFilter.cs
 ```
 
 #### Responsabilidades:
@@ -157,12 +165,56 @@ PrismaPrimeMarket.Application/
 - Tratamento de exceções de negócio
 - CQRS (separação de Commands e Queries)
 - Pipeline de comportamentos (logging, validação, etc.)
+- Padronização de respostas da API
 
 #### Padrões Aplicados:
-- **CQRS**: Separação de comandos e consultas
+- **CQRS**: Separação de comandos e consultas com MediatR
 - **Mediator Pattern**: MediatR para desacoplar handlers
 - **DTO Pattern**: Transferência de dados sem expor entidades
 - **Validation Pipeline**: FluentValidation com behaviors
+- **Response Pattern**: Respostas padronizadas com `Response<T>` e `PagedResponse<T>`
+
+#### Response Pattern
+
+Todas as operações retornam respostas padronizadas:
+
+```csharp
+// Response simples
+public class Response<T>
+{
+    public T? Data { get; set; }
+    public bool Succeeded { get; set; }
+    public string[]? Errors { get; set; }
+    public string Message { get; set; }
+    public ResponseType Type { get; set; }
+    public DateTime Timestamp { get; set; }
+    public string? Path { get; set; }
+}
+
+// Response paginada
+public class PagedResponse<T> : Response<T>
+{
+    public int PageNumber { get; set; }
+    public int PageSize { get; set; }
+    public int TotalRecords { get; set; }
+    public int TotalPages { get; set; }
+    public bool HasPreviousPage { get; }
+    public bool HasNextPage { get; }
+}
+
+// Factory methods
+Response<ProductDto>.Created(data);
+Response<ProductDto>.Updated(data);
+Response<ProductDto>.NotFound("Mensagem");
+PagedResponse<IEnumerable<T>>.Create(data, page, size, total);
+```
+
+**Benefícios:**
+- Consistência em todas as respostas da API
+- Facilita tratamento de erros no frontend
+- Metadados úteis (timestamp, path, type)
+- Suporte nativo a paginação
+- Factory methods para simplificar criação
 
 #### Tecnologias:
 - MediatR
