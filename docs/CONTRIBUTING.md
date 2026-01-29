@@ -388,9 +388,12 @@ git branch -D feat/adicionar-endpoint-produtos
 
 ### 🏠 **Validações Locais (Husky)**
 
+#### **pre-commit**
+- ✅ Bloqueia commits na branch `main`
+- ⚡ Executa: Antes de criar o commit
+
 #### **commit-msg**
 - ✅ Valida formato Conventional Commits
-- ✅ Bloqueia commits na branch `main`
 - ⚡ Executa: Imediatamente ao fazer commit
 
 #### **pre-push**
