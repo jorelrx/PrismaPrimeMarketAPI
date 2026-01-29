@@ -1,0 +1,11 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+branch=$(git symbolic-ref --short HEAD)
+if [ "$branch" = "main" ]; then
+  echo "🚫 Commit direto na branch main é proibido! Use uma feature branch e PR."
+  exit 1
+fi
+
+# Se não for main, segue normalmente
+exit 0
