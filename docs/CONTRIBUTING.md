@@ -608,12 +608,25 @@ dotnet test --collect:"XPlat Code Coverage"
 
 **Apenas em casos extremos!**
 
+Use o bypass **somente** quando as validações estiverem impedindo a correção de um problema crítico e não houver tempo hábil para corrigir o próprio pipeline primeiro. Exemplos de uso legítimo:
+
+- Hotfix urgente em produção onde:
+  - os hooks locais ou o pipeline de CI estão quebrados (ex.: script falhando sem relação com sua mudança), **e**
+  - o problema impacta usuários em produção (ex.: API fora do ar, falha grave de segurança ou perda de dados).
+- Teste automatizado conhecido como instável/flaky ou quebrado por motivo já rastreado em issue, mas que **não** é afetado pela mudança de hotfix.
+- Falha temporária de infraestrutura (ex.: indisponibilidade de feed de pacotes, serviço externo crítico) que impede o pipeline, mas a alteração precisa ser registrada/entregue imediatamente.
+
+Sempre que usar bypass:
+- Documente claramente no commit/PR o motivo do bypass (incluindo link para issue se existir).
+- Abra ou atualize uma issue para corrigir o hook/pipeline quebrado **o quanto antes**.
+- Não utilize para agilizar desenvolvimento normal, refactors ou features não críticas.
+
 ```bash
-# Bypass validações locais
-git commit -m "fix: Emergência" --no-verify
+# Bypass validações locais (use apenas nos cenários descritos acima)
+git commit -m "fix: hotfix crítico: descrição do problema (bypass explicado no PR)" --no-verify
 git push --no-verify
 
-# ⚠️ Não abuse! Use apenas em emergências reais.
+# ⚠️ Não abuse! Use apenas em emergências reais e sempre documente o motivo.
 ```
 
 ---
