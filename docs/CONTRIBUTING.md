@@ -180,8 +180,8 @@ Adicionar endpoint de produtos
 # ❌ Tipo inválido
 add: adicionar endpoint de produtos
 
-# ❌ Descrição em minúscula (deve começar com minúscula)
-feat: Adicionar Endpoint De Produtos
+# ❌ Descrição em minúscula (deve começar com maiúscula)
+feat: adicionar endpoint de produtos
 
 # ❌ Ponto final na descrição
 feat: adicionar endpoint de produtos.
