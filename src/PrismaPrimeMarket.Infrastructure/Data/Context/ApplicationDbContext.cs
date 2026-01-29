@@ -1,8 +1,8 @@
+using System.Reflection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using PrismaPrimeMarket.Domain.Entities;
-using System.Reflection;
 
 namespace PrismaPrimeMarket.Infrastructure.Data.Context;
 

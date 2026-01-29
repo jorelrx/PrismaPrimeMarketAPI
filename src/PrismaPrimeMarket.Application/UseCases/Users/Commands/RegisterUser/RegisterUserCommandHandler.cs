@@ -35,7 +35,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, U
     public async Task<UserDto> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         // Verifica se já existe usuário com o email (somente se fornecido)
-        if (!string.IsNullOrEmpty(request.Email) && 
+        if (!string.IsNullOrEmpty(request.Email) &&
             await _userRepository.ExistsByEmailAsync(request.Email, cancellationToken))
             throw new UserAlreadyExistsException(request.Email, "e-mail");
 
@@ -73,7 +73,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, U
 
         // Cria o usuário usando o Identity (para hash de senha)
         var result = await _userManager.CreateAsync(user, request.Password);
-        
+
         if (!result.Succeeded)
         {
             var errors = string.Join(", ", result.Errors.Select(e => e.Description));

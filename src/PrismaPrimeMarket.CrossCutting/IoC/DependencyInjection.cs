@@ -37,7 +37,7 @@ public static class DependencyInjection
         .AddEntityFrameworkStores<ApplicationDbContext>();
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
-        
+
         // Repositories
         services.AddScoped<IUserRepository, UserRepository>();
 

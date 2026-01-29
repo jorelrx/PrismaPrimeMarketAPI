@@ -12,18 +12,18 @@ public static class DependencyInjection
         var assembly = Assembly.GetExecutingAssembly();
 
         services.AddAutoMapper(assembly);
-        
+
         services.AddValidatorsFromAssembly(assembly);
-        
+
         services.AddMediatR(cfg =>
         {
             cfg.RegisterServicesFromAssembly(assembly);
-            
+
             // Registrar behaviors na ordem correta
             cfg.AddOpenBehavior(typeof(LoggingBehavior<,>));
             cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
         });
-        
+
         return services;
     }
 }

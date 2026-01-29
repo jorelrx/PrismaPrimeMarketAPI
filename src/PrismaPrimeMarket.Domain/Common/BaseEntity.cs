@@ -11,7 +11,7 @@ public abstract class BaseEntity : IBaseEntity
 
     [NotMapped]
     private readonly List<DomainEvent> _domainEvents = new();
-    
+
     [NotMapped]
     public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 

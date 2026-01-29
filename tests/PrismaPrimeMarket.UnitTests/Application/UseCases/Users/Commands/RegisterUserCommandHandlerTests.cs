@@ -24,7 +24,7 @@ public class RegisterUserCommandHandlerTests
     {
         _userRepositoryMock = new Mock<IUserRepository>();
         _unitOfWorkMock = new Mock<IUnitOfWork>();
-        
+
         // Setup UserManager mock
         var userStoreMock = new Mock<IUserStore<User>>();
         _userManagerMock = new Mock<UserManager<User>>(

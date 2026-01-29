@@ -17,7 +17,7 @@ public abstract class BaseEntityTypeConfiguration<T> : IEntityTypeConfiguration<
             .IsRequired();
 
         builder.Property(x => x.UpdatedAt);
-        
+
         builder.Property(x => x.IsDeleted)
             .IsRequired()
             .HasDefaultValue(false);

@@ -59,7 +59,7 @@ public class RegisterUserCommandValidator : AbstractValidator<RegisterUserComman
         try
         {
             var cleanedCpf = System.Text.RegularExpressions.Regex.Replace(cpf, @"[^\d]", "");
-            
+
             if (cleanedCpf.Length != 11)
                 return false;
 
@@ -69,7 +69,7 @@ public class RegisterUserCommandValidator : AbstractValidator<RegisterUserComman
             var sum = 0;
             for (int i = 0; i < 9; i++)
                 sum += int.Parse(cleanedCpf[i].ToString()) * (10 - i);
-            
+
             var remainder = sum % 11;
             var digit1 = remainder < 2 ? 0 : 11 - remainder;
 
@@ -79,7 +79,7 @@ public class RegisterUserCommandValidator : AbstractValidator<RegisterUserComman
             sum = 0;
             for (int i = 0; i < 10; i++)
                 sum += int.Parse(cleanedCpf[i].ToString()) * (11 - i);
-            
+
             remainder = sum % 11;
             var digit2 = remainder < 2 ? 0 : 11 - remainder;
 

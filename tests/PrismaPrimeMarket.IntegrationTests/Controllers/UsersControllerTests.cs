@@ -36,7 +36,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApplicationFactory>
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
-        
+
         var result = await response.Content.ReadFromJsonAsync<Response<UserDto>>();
         result.Should().NotBeNull();
         result!.Succeeded.Should().BeTrue();
@@ -62,7 +62,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApplicationFactory>
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        
+
         var result = await response.Content.ReadFromJsonAsync<Response<string>>();
         result.Should().NotBeNull();
         result!.Succeeded.Should().BeFalse();
@@ -118,7 +118,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApplicationFactory>
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        
+
         var result = await response.Content.ReadFromJsonAsync<Response<List<UserDto>>>();
         result.Should().NotBeNull();
         result!.Succeeded.Should().BeTrue();
@@ -147,7 +147,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApplicationFactory>
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        
+
         var result = await response.Content.ReadFromJsonAsync<Response<UserDto>>();
         result.Should().NotBeNull();
         result!.Succeeded.Should().BeTrue();
@@ -195,7 +195,7 @@ public class UsersControllerTests : IClassFixture<CustomWebApplicationFactory>
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
-        
+
         var result = await response.Content.ReadFromJsonAsync<Response<UserDto>>();
         result.Should().NotBeNull();
         result!.Succeeded.Should().BeTrue();

@@ -11,7 +11,7 @@ public enum ResponseType
     Updated,
     Deleted,
     Retrieved,
-    
+
     // Error responses
     NotFound,
     ValidationError,

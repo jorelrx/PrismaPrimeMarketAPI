@@ -17,7 +17,7 @@ public class ValidationFilter : ActionFilterAttribute
                 .ToArray();
 
             var response = Response<string>.ValidationError(
-                errors, 
+                errors,
                 path: context.HttpContext.Request.Path.Value
             );
 

@@ -55,7 +55,7 @@ public class CPF : ValueObject
         var sum = 0;
         for (int i = 0; i < 9; i++)
             sum += int.Parse(cpf[i].ToString()) * (10 - i);
-        
+
         var remainder = sum % 11;
         var digit1 = remainder < 2 ? 0 : 11 - remainder;
 
@@ -66,7 +66,7 @@ public class CPF : ValueObject
         sum = 0;
         for (int i = 0; i < 10; i++)
             sum += int.Parse(cpf[i].ToString()) * (11 - i);
-        
+
         remainder = sum % 11;
         var digit2 = remainder < 2 ? 0 : 11 - remainder;
 

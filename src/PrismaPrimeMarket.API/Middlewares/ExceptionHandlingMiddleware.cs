@@ -28,7 +28,7 @@ public class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Exception
 
         var response = context.Response;
         response.ContentType = "application/json";
-        
+
         Response<string> responseModel;
         var path = context.Request.Path.Value;
 

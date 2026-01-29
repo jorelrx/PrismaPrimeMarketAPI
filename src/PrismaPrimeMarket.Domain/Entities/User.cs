@@ -20,12 +20,12 @@ public class User : IdentityUser<Guid>, IBaseEntity, IAggregateRoot
     public PhoneNumber? Phone { get; private set; }
     public DateTime? BirthDate { get; private set; }
     public string? ProfilePictureUrl { get; private set; }
-    
+
     // Controle de timestamps
     public DateTime CreatedAt { get; private set; }
     public DateTime? UpdatedAt { get; private set; }
     public DateTime? LastLoginAt { get; private set; }
-    
+
     // Controle de status
     public bool IsActive { get; private set; }
     public bool IsDeleted { get; private set; }
@@ -36,7 +36,7 @@ public class User : IdentityUser<Guid>, IBaseEntity, IAggregateRoot
     public IReadOnlyCollection<DomainEvent> DomainEvents => _domainEvents.AsReadOnly();
 
     // Construtor privado para EF Core
-    private User() 
+    private User()
     {
         FirstName = string.Empty;
         LastName = string.Empty;
@@ -84,20 +84,20 @@ public class User : IdentityUser<Guid>, IBaseEntity, IAggregateRoot
         // Validações de domínio
         ValidateUserName(userName);
         ValidateName(firstName, nameof(firstName));
-        
+
         if (!string.IsNullOrEmpty(email))
             ValidateEmail(email);
-        
+
         if (!string.IsNullOrEmpty(lastName))
             ValidateName(lastName, nameof(lastName));
-        
+
         ValidateBirthDate(birthDate);
 
         var user = new User(userName, firstName, email, lastName, cpf, phone, birthDate);
-        
+
         // Adiciona evento de domínio
         user.AddDomainEvent(new UserRegisteredEvent(user.Id, user.Email ?? string.Empty, user.UserName!));
-        
+
         return user;
     }
 
@@ -137,7 +137,7 @@ public class User : IdentityUser<Guid>, IBaseEntity, IAggregateRoot
 
         IsActive = true;
         UpdateTimestamp();
-        
+
         AddDomainEvent(new UserActivatedEvent(Id, Email!));
     }
 

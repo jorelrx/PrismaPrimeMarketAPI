@@ -17,7 +17,7 @@ public static class ServiceCollectionExtensions
         });
 
         // Add other presentation layer services here
-        
+
         return services;
     }
 
@@ -25,7 +25,7 @@ public static class ServiceCollectionExtensions
     {
         app.UseMiddleware<ExceptionHandlingMiddleware>();
         // Add request logging middleware here if created
-        
+
         return app;
     }
 }

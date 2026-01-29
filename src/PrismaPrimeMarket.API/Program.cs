@@ -1,6 +1,6 @@
+using PrismaPrimeMarket.API.Extensions;
 using PrismaPrimeMarket.Application;
 using PrismaPrimeMarket.CrossCutting.IoC;
-using PrismaPrimeMarket.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 

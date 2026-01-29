@@ -12,7 +12,7 @@ public static class ResponseMessages
     public const string Deleted = "Recurso excluído com sucesso";
     public const string Retrieved = "Recurso recuperado com sucesso";
     public const string ListRetrieved = "Lista recuperada com sucesso";
-    
+
     // Error messages
     public const string NotFound = "Recurso não encontrado";
     public const string ValidationError = "Erro de validação nos dados fornecidos";
@@ -21,7 +21,7 @@ public static class ResponseMessages
     public const string Forbidden = "Acesso negado a este recurso";
     public const string Conflict = "Conflito detectado ao processar a requisição";
     public const string InternalServerError = "Erro interno no servidor";
-    
+
     /// <summary>
     /// Obtém a mensagem padrão para um tipo de resposta
     /// </summary>
