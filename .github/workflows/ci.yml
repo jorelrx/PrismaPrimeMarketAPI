@@ -26,18 +26,18 @@ jobs:
     
     - name: "🐳 Executar testes com Docker Compose"
       run: |
-        docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from tests
+        docker compose -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from tests
       continue-on-error: false
     
     - name: "📋 Copiar resultados dos testes"
       if: always()
       run: |
-        docker-compose -f docker-compose.test.yml run --rm tests sh -c "cp -r /testresults /tmp/" || true
-        docker cp $(docker-compose -f docker-compose.test.yml ps -q tests):/testresults ./testresults || true
+        docker compose -f docker-compose.test.yml run --rm tests sh -c "cp -r /testresults /tmp/" || true
+        docker cp $(docker compose -f docker-compose.test.yml ps -q tests):/testresults ./testresults || true
     
     - name: "🧹 Cleanup"
       if: always()
-      run: docker-compose -f docker-compose.test.yml down -v
+      run: docker compose -f docker-compose.test.yml down -v
     
     - name: "📤 Upload dos resultados dos testes"
       uses: actions/upload-artifact@v4
