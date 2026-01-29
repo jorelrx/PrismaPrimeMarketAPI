@@ -150,27 +150,33 @@ Tarefas de manutenção geral.
 ### Formato
 
 ```
-tipo(escopo): descrição curta
+tipo(escopo): Descrição curta começando com letra maiúscula
 
 [corpo opcional]
 
 [rodapé opcional]
 ```
 
+**📌 Regras importantes:**
+- ✅ Tipo sempre em **minúsculo** (`feat`, `fix`, `docs`, etc.)
+- ✅ Descrição sempre começando com **letra maiúscula**
+- ✅ Sem ponto final na descrição
+- ✅ Máximo de 100 caracteres no header
+
 ### Exemplos Corretos ✅
 
 ```bash
-feat: adicionar endpoint de produtos
-feat(api): implementar listagem de produtos com paginação
-fix: corrigir validação de CPF
-fix(domain): resolver erro ao criar usuário sem email
-docs: atualizar guia de contribuição
-style: formatar código com dotnet format
-refactor(application): extrair lógica de validação para service
-test: adicionar testes para ProductService
-build: atualizar pacote AutoMapper para v13
-ci: corrigir workflow de docker build
-chore: atualizar dependências do projeto
+feat: Adicionar endpoint de produtos
+feat(api): Implementar listagem de produtos com paginação
+fix: Corrigir validação de CPF
+fix(domain): Resolver erro ao criar usuário sem email
+docs: Atualizar guia de contribuição
+style: Formatar código com dotnet format
+refactor(application): Extrair lógica de validação para service
+test: Adicionar testes para ProductService
+build: Atualizar pacote AutoMapper para v13
+ci: Corrigir workflow de docker build
+chore: Atualizar dependências do projeto
 ```
 
 ### Exemplos Incorretos ❌
@@ -180,16 +186,19 @@ chore: atualizar dependências do projeto
 Adicionar endpoint de produtos
 
 # ❌ Tipo inválido
-add: adicionar endpoint de produtos
+add: Adicionar endpoint de produtos
 
-# ❌ Descrição em minúscula (deve começar com maiúscula)
+# ❌ Não começar com letra maiúscula
 feat: adicionar endpoint de produtos
 
+# ❌ Todas as palavras em maiúscula (Pascal Case)
+feat: Adicionar Endpoint De Produtos
+
 # ❌ Ponto final na descrição
-feat: adicionar endpoint de produtos.
+feat: Adicionar endpoint de produtos.
 
 # ❌ Descrição muito longa (> 100 caracteres)
-feat: adicionar endpoint de produtos com listagem paginada e filtros avançados por categoria e preço
+feat: Adicionar endpoint de produtos com listagem paginada e filtros avançados por categoria e preço
 ```
 
 ### Tipos Válidos
@@ -261,9 +270,9 @@ Commits pequenos e atômicos, seguindo Conventional Commits:
 git add .
 
 # Commit (será validado automaticamente)
-git commit -m "feat: adicionar entidade Product"
-git commit -m "feat: implementar ProductRepository"
-git commit -m "test: adicionar testes para Product"
+git commit -m "feat: Adicionar entidade Product"
+git commit -m "feat: Implementar ProductRepository"
+git commit -m "test: Adicionar testes para Product"
 ```
 
 **O que acontece no commit:**
@@ -281,7 +290,7 @@ Husky configura *git hooks* que rodam em sequência durante o `git commit`:
 # ❌ subject may not be empty [subject-empty]
 
 # Corrija e tente novamente
-git commit -m "feat: adicionar entidade Product"
+git commit -m "feat: Adicionar entidade Product"
 ```
 
 ### **5️⃣ Push**
@@ -313,7 +322,7 @@ dotnet test
 
 # Faça commit da correção
 git add .
-git commit -m "fix: corrigir testes"
+git commit -m "fix: Corrigir testes"
 git push
 ```
 
@@ -330,7 +339,7 @@ No GitHub:
 2. Clique em **Compare & pull request**
 3. **Título** deve seguir Conventional Commits:
    ```
-   feat: adicionar endpoint de listagem de produtos
+   feat: Adicionar endpoint de listagem de produtos
    ```
 4. Preencha a descrição seguindo o template
 5. Clique em **Create pull request**
@@ -361,7 +370,7 @@ O GitHub Actions vai executar automaticamente:
 ```bash
 # Fazer alterações
 git add .
-git commit -m "refactor: aplicar sugestões do code review"
+git commit -m "refactor: Aplicar sugestões do code review"
 git push
 
 # Os workflows vão executar novamente automaticamente
@@ -458,10 +467,10 @@ git branch -D feat/adicionar-endpoint-produtos
 Deve seguir **Conventional Commits**:
 
 ```
-feat: adicionar endpoint de listagem de produtos
-fix: corrigir validação de email no registro
-docs: atualizar documentação da API
-refactor: melhorar estrutura do ProductService
+feat: Adicionar endpoint de listagem de produtos
+fix: Corrigir validação de email no registro
+docs: Atualizar documentação da API
+refactor: Melhorar estrutura do ProductService
 ```
 
 ### Descrição do PR
@@ -516,14 +525,14 @@ Labels automáticas baseadas em linhas alteradas:
 ```bash
 # Solução: Mude para uma branch de feature
 git checkout -b feat/minha-feature
-git commit -m "feat: minha alteração"
+git commit -m "feat: Minha alteração"
 ```
 
 **Erro:** "subject may not be empty [subject-empty]"
 
 ```bash
 # Solução: Use formato correto
-git commit -m "feat: adicionar nova funcionalidade"
+git commit -m "feat: Adicionar nova funcionalidade"
 ```
 
 ### ❌ Push Bloqueado
@@ -537,7 +546,7 @@ dotnet build
 # Veja os erros e corrija
 # Depois faça novo commit
 git add .
-git commit -m "fix: corrigir erros de build"
+git commit -m "fix: Corrigir erros de build"
 git push
 ```
 
@@ -549,7 +558,7 @@ dotnet test --verbosity detailed
 
 # Veja quais testes falharam e corrija
 git add .
-git commit -m "fix: corrigir testes falhando"
+git commit -m "fix: Corrigir testes falhando"
 git push
 ```
 
@@ -560,7 +569,7 @@ git push
 ```bash
 # Solução: Edite o título do PR no GitHub
 # De: "Add products endpoint"
-# Para: "feat: adicionar endpoint de produtos"
+# Para: "feat: Adicionar endpoint de produtos"
 ```
 
 **Erro:** "Commit messages do not match Conventional Commits"
@@ -601,7 +610,7 @@ dotnet test --collect:"XPlat Code Coverage"
 
 ```bash
 # Bypass validações locais
-git commit -m "fix: emergência" --no-verify
+git commit -m "fix: Emergência" --no-verify
 git push --no-verify
 
 # ⚠️ Não abuse! Use apenas em emergências reais.
@@ -620,9 +629,9 @@ git push --no-verify
 
 ```bash
 # ✅ Bom
-git commit -m "feat: adicionar validação de CPF"
-git commit -m "test: adicionar testes para validação de CPF"
-git commit -m "docs: documentar classe CPF"
+git commit -m "feat: Adicionar validação de CPF"
+git commit -m "test: Adicionar testes para validação de CPF"
+git commit -m "docs: Documentar classe CPF"
 
 # ❌ Ruim
 git commit -m "WIP"
