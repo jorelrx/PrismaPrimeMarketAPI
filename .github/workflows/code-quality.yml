@@ -1,164 +1,129 @@
-name: Code Quality Analysis
+name: Code Quality & Security
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
   schedule:
-    - cron: '0 0 * * 0'  # Weekly on Sundays
+    # Executa toda segunda-feira às 9h UTC
+    - cron: '0 9 * * 1'
   workflow_dispatch:
 
 env:
   DOTNET_VERSION: '8.0.x'
 
 jobs:
-  analyze-csharp:
-    name: C# Code Analysis
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-    
-    - name: Restore dependencies
-      run: dotnet restore
-    
-    - name: Build with code analysis
-      run: |
-        dotnet build --configuration Release --no-restore \
-          /p:EnableNETAnalyzers=true \
-          /p:AnalysisLevel=latest \
-          /p:EnforceCodeStyleInBuild=true \
-          /p:TreatWarningsAsErrors=false
-    
-    - name: Install security analyzers
-      run: |
-        dotnet add package Microsoft.CodeAnalysis.NetAnalyzers
-        dotnet add package SecurityCodeScan.VS2019
-      continue-on-error: true
-    
-    - name: Run security analysis
-      run: dotnet build --no-restore /p:RunAnalyzersDuringBuild=true
-      continue-on-error: true
-
-  dependency-review:
-    name: Dependency Review
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    
-    - name: Dependency Review
-      uses: actions/dependency-review-action@v4
-      with:
-        fail-on-severity: high
-
-  codeql-analysis:
-    name: CodeQL Security Analysis
+  codeql:
+    name: CodeQL Analysis
     runs-on: ubuntu-latest
     permissions:
       actions: read
       contents: read
       security-events: write
-    
+
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'csharp' ]
-    
+        language: ['csharp']
+
     steps:
-    - name: Checkout code
+    - name: "📥 Checkout do código"
       uses: actions/checkout@v4
-    
-    - name: Initialize CodeQL
+
+    - name: "⚙️ Setup .NET"
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: "🔍 Inicializar CodeQL"
       uses: github/codeql-action/init@v3
       with:
         languages: ${{ matrix.language }}
         queries: +security-and-quality
-    
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-    
-    - name: Restore dependencies
+
+    - name: "📦 Restore dependencies"
       run: dotnet restore
-    
-    - name: Build
+
+    - name: "🔨 Build"
       run: dotnet build --configuration Release --no-restore
-    
-    - name: Perform CodeQL Analysis
+
+    - name: "🔬 Executar análise CodeQL"
       uses: github/codeql-action/analyze@v3
       with:
         category: "/language:${{ matrix.language }}"
 
-  dotnet-format:
-    name: .NET Format Check
+  format-check:
+    name: Format Check
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout code
+    - name: "📥 Checkout do código"
       uses: actions/checkout@v4
-    
-    - name: Setup .NET
+
+    - name: "⚙️ Setup .NET"
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
-    
-    - name: Restore dependencies
-      run: dotnet restore
-    
-    - name: Check code formatting
-      run: |
-        dotnet format --verify-no-changes --verbosity diagnostic
-        if [ $? -ne 0 ]; then
-          echo "❌ Code formatting issues detected!"
-          echo "Run 'dotnet format' to fix formatting issues."
-          exit 1
-        fi
-        echo "✅ Code formatting is correct!"
 
-  metrics:
+    - name: "📦 Restore dependencies"
+      run: dotnet restore
+
+    - name: "🎨 Verificar formatação"
+      run: dotnet format --verify-no-changes --verbosity diagnostic
+
+  code-metrics:
     name: Code Metrics
     runs-on: ubuntu-latest
-    
+
     steps:
-    - name: Checkout code
+    - name: "📥 Checkout do código"
       uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    
-    - name: Setup .NET
+
+    - name: "⚙️ Setup .NET"
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
-    
-    - name: Install code metrics tool
-      run: dotnet tool install --global dotnet-code-metrics
-    
-    - name: Calculate code metrics
+
+    - name: "📦 Restore dependencies"
+      run: dotnet restore
+
+    - name: "📊 Coletar métricas de código"
       run: |
-        echo "## Code Metrics Report" > metrics.md
-        echo "" >> metrics.md
-        echo "Generated on: $(date)" >> metrics.md
-        echo "" >> metrics.md
-        
-        # Add custom metrics analysis here when projects are created
-        echo "Metrics will be available once the solution is fully scaffolded." >> metrics.md
-    
-    - name: Upload metrics report
+        echo "📈 Coletando métricas..."
+        dotnet build --configuration Release --no-restore /p:CollectMetrics=true || true
+        echo "✅ Métricas coletadas"
+
+    - name: "🔐 Verificar vulnerabilidades"
+      run: |
+        echo "🔍 Verificando vulnerabilidades em dependências..."
+        dotnet list package --vulnerable --include-transitive 2>&1 | tee vulnerabilities.txt
+        if grep -q "has the following vulnerable packages" vulnerabilities.txt; then
+          echo "⚠️ ATENÇÃO: Vulnerabilidades encontradas!"
+          cat vulnerabilities.txt
+          echo "::warning::Pacotes vulneráveis detectados. Revise e atualize."
+        else
+          echo "✅ Nenhuma vulnerabilidade encontrada"
+        fi
+
+    - name: "⚠️ Verificar pacotes deprecados"
+      run: |
+        echo "🔍 Verificando pacotes deprecados..."
+        dotnet list package --deprecated --include-transitive 2>&1 | tee deprecated.txt
+        if grep -q "has the following deprecated packages" deprecated.txt; then
+          echo "⚠️ ATENÇÃO: Pacotes deprecados encontrados!"
+          cat deprecated.txt
+          echo "::warning::Pacotes deprecados detectados. Considere atualizar."
+        else
+          echo "✅ Nenhum pacote deprecado encontrado"
+        fi
+
+    - name: "📤 Upload de relatórios"
       uses: actions/upload-artifact@v4
+      if: always()
       with:
-        name: code-metrics
-        path: metrics.md
+        name: code-quality-reports
+        path: |
+          vulnerabilities.txt
+          deprecated.txt
         retention-days: 30

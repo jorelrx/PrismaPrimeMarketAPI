@@ -1,72 +1,229 @@
 # 🚀 Quick Start Guide - Prisma Prime Market API
 
-Este guia rápido vai te ajudar a configurar o projeto em minutos.
+## Início Rápido em 2 Minutos ⚡
 
-## 📋 Pré-requisitos
-
-Antes de começar, certifique-se de ter instalado:
-
-- ✅ [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
-- ✅ [PostgreSQL 15+](https://www.postgresql.org/download/) ou [Docker](https://www.docker.com/)
-- ✅ [Git](https://git-scm.com/)
-- ✅ IDE: [VS Code](https://code.visualstudio.com/)
-
-## 🎯 Setup em 5 Minutos
-
-### 1️⃣ Clone o Repositório
+### Com Docker (Mais Fácil)
 
 ```bash
+# 1. Clone
 git clone https://github.com/jorelrx/PrismaPrimeMarketAPI.git
 cd PrismaPrimeMarketAPI
+
+# 2. Inicie
+docker-compose up -d
+
+# 3. Acesse
+# http://localhost:8080/swagger
 ```
 
-### 2️⃣ Configure o Banco de Dados
+**Pronto! ✅** API + PostgreSQL + PgAdmin rodando!
 
-**Opção A: PostgreSQL Local**
+---
+
+## Comandos Essenciais
+
+### Docker
+
 ```bash
-# Crie o banco de dados
-psql -U postgres -c "CREATE DATABASE prismaprimemarketapi;"
+# Iniciar
+docker-compose up -d
+
+# Ver logs
+docker-compose logs -f api
+
+# Parar
+docker-compose down
+
+# Rebuild (após mudanças)
+docker-compose up -d --build
+
+# Reset completo (apaga dados)
+docker-compose down -v
 ```
 
-**Opção B: Docker (Recomendado)**
+### Testes
+
 ```bash
-# Inicie PostgreSQL no Docker
-docker run --name postgres ^
-  -e POSTGRES_PASSWORD=YourStrong@Passw0rd ^
-  -e POSTGRES_DB=prismaprimemarketapi ^
-  -p 5432:5432 ^
-  -d postgres:16-alpine
+# Testes locais
+dotnet test
+
+# Testes com Docker
+.\scripts\test-docker.bat                    # Windows
+docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit  # Linux
+
+# Validação completa
+.\scripts\validate.bat                       # Windows
+./scripts/validate.sh                        # Linux
 ```
 
-### 3️⃣ Configure as Variáveis de Ambiente
+### Git Hooks
 
-Crie `src/PrismaPrimeMarket.API/appsettings.Development.json`:
+```bash
+# Configurar (uma vez)
+git config core.hooksPath .githooks
 
-```json
+# Agora git push roda testes automaticamente! 🎉
+```
+
+---
+
+## URLs Importantes
+
+| Serviço | URL | Credenciais |
+|---------|-----|-------------|
+| API | http://localhost:8080 | - |
+| Swagger | http://localhost:8080/swagger | - |
+| PgAdmin | http://localhost:5050 | admin@prismaprime.com / admin |
+| PostgreSQL | localhost:5432 | postgres / postgres |
+
+---
+
+## Desenvolvimento Local (Sem Docker)
+
+```bash
+# 1. Instale PostgreSQL localmente
+
+# 2. Configure connection string
+# Edite: src/PrismaPrimeMarket.API/appsettings.Development.json
+
+# 3. Restaurar pacotes
+dotnet restore
+
+# 4. Aplicar migrations
+dotnet ef database update \
+  --project src/PrismaPrimeMarket.Infrastructure \
+  --startup-project src/PrismaPrimeMarket.API
+
+# 5. Rodar API
+dotnet run --project src/PrismaPrimeMarket.API
+```
+
+---
+
+## Primeiros Passos
+
+### 1. Criar um usuário
+
+```bash
+POST http://localhost:8080/api/v1/users/register
+Content-Type: application/json
+
 {
-  "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Port=5432;Database=prismaprimemarketapi;Username=postgres;Password=YourStrong@Passw0rd;"
-  },
-  "JwtSettings": {
-    "SecretKey": "your-super-secret-key-change-this-in-production-min-32-chars",
-    "Issuer": "PrismaPrimeMarketAPI",
-    "Audience": "PrismaPrimeMarketClient",
-    "ExpirationMinutes": 60
-  },
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft.AspNetCore": "Warning"
-    }
-  }
+  "userName": "testuser",
+  "firstName": "Test",
+  "lastName": "User",
+  "email": "test@example.com",
+  "password": "Test@1234"
 }
 ```
 
-### 4️⃣ Restaure as Dependências
+### 2. Login
 
 ```bash
-dotnet restore
+POST http://localhost:8080/api/v1/auth/login
+Content-Type: application/json
+
+{
+  "userName": "testuser",
+  "password": "Test@1234"
+}
 ```
+
+### 3. Usar o token
+
+```bash
+GET http://localhost:8080/api/v1/users
+Authorization: Bearer {seu-token-aqui}
+```
+
+---
+
+## Estrutura do Projeto
+
+```
+PrismaPrimeMarketAPI/
+├── src/
+│   ├── PrismaPrimeMarket.API/              # Controllers, Middlewares
+│   ├── PrismaPrimeMarket.Application/       # Use Cases, DTOs, CQRS
+│   ├── PrismaPrimeMarket.Domain/            # Entities, Business Rules
+│   ├── PrismaPrimeMarket.Infrastructure/    # Database, Repositories
+│   └── PrismaPrimeMarket.CrossCutting/      # DI, Logging, Security
+├── tests/
+│   ├── PrismaPrimeMarket.UnitTests/
+│   └── PrismaPrimeMarket.IntegrationTests/
+├── docs/                                     # Documentação completa
+├── scripts/                                  # Scripts úteis
+├── docker-compose.yml                        # Docker local
+└── docker-compose.test.yml                   # Docker para testes
+```
+
+---
+
+## Próximos Passos
+
+1. **Leia a documentação completa**
+   - [Arquitetura](docs/ARCHITECTURE.md)
+   - [API Guide](docs/API.md)
+   - [CI/CD Docker](docs/CI_CD_DOCKER.md)
+
+2. **Configure CI/CD**
+   - Ver [docs/CI_CD_DOCKER.md](docs/CI_CD_DOCKER.md)
+   - Configurar GitHub Actions
+   - Deploy automático
+
+3. **Customize o projeto**
+   - Adicionar novos endpoints
+   - Implementar regras de negócio
+   - Integrar serviços externos
+
+---
+
+## Troubleshooting
+
+### Porta 8080 já em uso
+
+```bash
+# Altere a porta em docker-compose.yml
+ports:
+  - "8081:8080"  # Usar 8081 no host
+```
+
+### Banco de dados não conecta
+
+```bash
+# Verifique se PostgreSQL está rodando
+docker ps
+
+# Veja logs do banco
+docker-compose logs postgres
+
+# Reset completo
+docker-compose down -v
+docker-compose up -d
+```
+
+### Testes falhando
+
+```bash
+# Limpar e rebuild
+docker-compose down -v
+docker system prune -af
+dotnet clean
+dotnet build
+dotnet test
+```
+
+---
+
+## Ajuda
+
+- 📖 [Documentação Completa](docs/)
+- 🐛 [Reportar Bug](https://github.com/jorelrx/PrismaPrimeMarketAPI/issues)
+- 💬 [Discussões](https://github.com/jorelrx/PrismaPrimeMarketAPI/discussions)
+
+---
+
+**Happy Coding! 🚀**
 
 ### 5️⃣ Execute as Migrations
 

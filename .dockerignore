@@ -1,0 +1,66 @@
+# Ignore build outputs
+**/bin/
+**/obj/
+**/out/
+
+# Ignore test results
+**/TestResults/
+**/coverage/
+**/testresults/
+
+# Ignore IDE and editor files
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.swp
+*~
+
+# Ignore git files
+.git/
+.gitignore
+.gitattributes
+.github/
+
+# Ignore documentation
+*.md
+docs/
+
+# Ignore Docker files
+Dockerfile*
+docker-compose*.yml
+.dockerignore
+
+# Ignore CI/CD files
+.github/
+azure-pipelines.yml
+.gitlab-ci.yml
+
+# Ignore scripts
+scripts/
+
+# Ignore local environment files
+.env
+.env.local
+.env.*.local
+appsettings.Development.json
+launchSettings.json
+
+# Ignore package manager files
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore temporary files
+*.tmp
+*.temp
+*.log
+*.cache

@@ -3,6 +3,7 @@
 [![.NET](https://img.shields.io/badge/.NET-8.0-purple)](https://dotnet.microsoft.com/)
 [![C#](https://img.shields.io/badge/C%23-12.0-blue)](https://docs.microsoft.com/en-us/dotnet/csharp/)
 [![CI Pipeline](https://github.com/jorelrx/PrismaPrimeMarketAPI/actions/workflows/ci.yml/badge.svg)](https://github.com/jorelrx/PrismaPrimeMarketAPI/actions/workflows/ci.yml)
+[![Docker Build](https://github.com/jorelrx/PrismaPrimeMarketAPI/actions/workflows/docker-build.yml/badge.svg)](https://github.com/jorelrx/PrismaPrimeMarketAPI/actions/workflows/docker-build.yml)
 [![Code Quality](https://github.com/jorelrx/PrismaPrimeMarketAPI/actions/workflows/code-quality.yml/badge.svg)](https://github.com/jorelrx/PrismaPrimeMarketAPI/actions/workflows/code-quality.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -126,36 +127,194 @@ PrismaPrimeMarketAPI/
 ## 🔧 Pré-requisitos
 
 - [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
-- [PostgreSQL 17+](https://www.postgresql.org/download/) ou [Docker](https://www.docker.com/)
-- [Redis](https://redis.io/) (opcional para cache)
+- [Docker](https://www.docker.com/)
+
+**OU** (para desenvolvimento sem Docker):
+- [PostgreSQL 17+](https://www.postgresql.org/download/)
 - [Visual Studio 2022](https://visualstudio.microsoft.com/) ou [VS Code](https://code.visualstudio.com/)
 
-## 🚀 Como Executar
+## 🚀 Quick Start
 
-### 1. Clone o repositório
+### Opção 1: Docker Compose (Recomendado) 🐳
+
+```bash
+# Clone o repositório
+git clone https://github.com/jorelrx/PrismaPrimeMarketAPI.git
+cd PrismaPrimeMarketAPI
+
+# Inicie todos os serviços
+docker-compose up -d
+
+# Acesse a API
+# API: http://localhost:8080
+# Swagger: http://localhost:8080/swagger
+# PgAdmin: http://localhost:5050
+```
+
+**Pronto!** A API está rodando com banco de dados PostgreSQL e PgAdmin.
+
+---
+
+### Opção 2: Desenvolvimento Local
+
+#### 1. Clone o repositório
 ```bash
 git clone https://github.com/jorelrx/PrismaPrimeMarketAPI.git
 cd PrismaPrimeMarketAPI
 ```
 
-### 2. Configure as variáveis de ambiente
-Copie o arquivo `appsettings.example.json` para `appsettings.Development.json` e configure:
+#### 2. Instalar validação local (Husky + Commitlint)
+
+```bash
+# Instalar dependências Node.js (commitlint, husky)
+npm install
+
+# Configurar Git hooks
+npm run prepare
+```
+
+**Isso ativa:**
+- ✅ Bloqueio de commits fora da convenção (feat, fix, etc.)
+- ✅ Bloqueio de push se testes falharem
+
+#### 3. Configure o banco de dados
+
+**Com Docker:**
+```bash
+docker run -d \
+  --name prismaprime-postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=PrismaPrimeMarketDB \
+  -p 5432:5432 \
+  postgres:16-alpine
+```
+
+**Ou instale PostgreSQL localmente** e crie o banco `PrismaPrimeMarketDB`
+
+#### 3. Configure connection string
+
+Edite `src/PrismaPrimeMarket.API/appsettings.Development.json`:
+
 ```json
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Host=localhost;Database=PrismaPrimeMarket;Username=postgres;Password=YourPassword;"
-  },
-  "JwtSettings": {
-    "SecretKey": "your-secret-key-here",
-    "Issuer": "PrismaPrimeMarketAPI",
-    "Audience": "PrismaPrimeMarketClient"
+    "DefaultConnection": "Host=localhost;Port=5432;Database=PrismaPrimeMarketDB;Username=postgres;Password=postgres"
   }
 }
+#### 4. Execute migrations e inicie a API
+
+```bash
+# Restaurar pacotes .NET
+dotnet restore
+
+# Build
+dotnet build
+
+# Aplicar migrations
+dotnet ef database update --project src/PrismaPrimeMarket.Infrastructure --startup-project src/PrismaPrimeMarket.API
+
+# Rodar testes (garantir que tudo está OK)
+dotnet test
+
+# Executar a API
+dotnet run --project src/PrismaPrimeMarket.API
+
+# Acesse: http://localhost:5000
+# Swagger: http://localhost:5000/swagger
 ```
 
-### 3. Execute as migrações
+**Pronto!** Agora seus commits e pushes serão validados automaticamente. 🎉
+
+---
+
+## 🧪 Testes
+
+### Executar todos os testes
+
 ```bash
-cd src/PrismaPrimeMarket.API
+# Testes locais
+dotnet test
+
+# Testes com Docker (ambiente isolado)
+.\scripts\test-docker.bat           # Windows
+docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit  # Linux/Mac
+
+# Validação completa (restore + build + test + format)
+.\scripts\validate.bat              # Windows
+./scripts/validate.sh               # Linux/Mac
+```
+
+### Git Hooks (Pre-Push)
+
+Configurar hook para rodar testes antes de cada push:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+Agora os testes rodarão automaticamente antes de cada `git push` e bloquearão o push se falharem! 🛡️
+
+---
+
+## 🐳 Docker
+
+### Comandos Úteis
+
+```bash
+# Desenvolvimento local com live reload
+docker-compose up -d
+
+# Rebuild após mudanças
+docker-compose up -d --build
+
+# Ver logs
+docker-compose logs -f api
+
+# Parar todos os serviços
+docker-compose down
+
+# Limpar volumes (reset completo)
+docker-compose down -v
+
+# Rodar apenas testes
+docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit
+```
+
+### Ambientes
+
+- **Development**: `docker-compose.yml` - Desenvolvimento local
+- **Test**: `docker-compose.test.yml` - Testes automatizados
+
+---
+
+## 🔄 CI/CD
+
+Pipeline completo com GitHub Actions:
+
+- ✅ **CI**: Testes automatizados em Docker + análise de código
+- ✅ **CD**: Deploy automático em Staging e Production
+- ✅ **Security**: Scan de vulnerabilidades com Trivy
+- ✅ **Quality**: Análise de código e formatação
+
+Ver documentação completa: [CI/CD Docker Guide](docs/CI_CD_DOCKER.md)
+
+### Status dos Pipelines
+
+[![CI Pipeline](https://github.com/jorelrx/PrismaPrimeMarketAPI/actions/workflows/ci.yml/badge.svg)](https://github.com/jorelrx/PrismaPrimeMarketAPI/actions/workflows/ci.yml)
+[![CD Pipeline](https://github.com/jorelrx/PrismaPrimeMarketAPI/actions/workflows/cd.yml/badge.svg)](https://github.com/jorelrx/PrismaPrimeMarketAPI/actions/workflows/cd.yml)
+[![Docker Build](https://github.com/jorelrx/PrismaPrimeMarketAPI/actions/workflows/docker-build.yml/badge.svg)](https://github.com/jorelrx/PrismaPrimeMarketAPI/actions/workflows/docker-build.yml)
+
+---
+
+## 📚 Documentação
+
+- [Arquitetura do Projeto](docs/ARCHITECTURE.md)
+- [Estrutura do Projeto](docs/PROJECT_STRUCTURE.md)
+- [Guia de API](docs/API.md)
+- [CQRS Guide](docs/CQRS_GUIDE.md)
+- [CI/CD com Docker](docs/CI_CD_DOCKER.md)
+- [Testes Automatizados](docs/TESTING_AUTOMATION.md)
+- [Referência Rápida](docs/QUICK_REFERENCE.md)
 dotnet ef database update
 ```
 

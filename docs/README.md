@@ -224,12 +224,9 @@ CI_CD_FLOWCHART.md        → Conventional Commits
 | ARCHITECTURE.md | ✅ Completo | 2026-01-06 |
 | API.md | ✅ Completo | 2026-01-06 |
 | PROJECT_STRUCTURE.md | ✅ Completo | 2026-01-06 |
-| CONTRIBUTING.md | ✅ Completo | 2026-01-06 |
 | AI_INTEGRATION.md | ✅ Completo | 2026-01-06 |
 | CI_CD_SUMMARY.md | ✅ Completo | 2026-01-19 |
-| CI_CD_IMPLEMENTATION.md | ✅ Completo | 2026-01-19 |
 | CI_CD_SETUP.md | ✅ Completo | 2026-01-19 |
-| QUICK_REFERENCE.md | ✅ Completo | 2026-01-19 |
 | CI_CD_FLOWCHART.md | ✅ Completo | 2026-01-19 |
 
 ---

@@ -2,9 +2,9 @@ name: CI Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
   workflow_dispatch:
 
 env:
@@ -13,36 +13,69 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
-  build:
-    name: Build & Test
+  # Etapa 1: Testes básicos em ambiente Docker
+  test-docker:
+    name: "Etapa 1: Testes em Docker"
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout code
+    - name: "📥 Checkout do código"
       uses: actions/checkout@v4
       with:
-        fetch-depth: 0  # Necessário para análise de código
+        fetch-depth: 0
     
-    - name: Setup .NET
+    - name: "🐳 Executar testes com Docker Compose"
+      run: |
+        docker-compose -f docker-compose.test.yml up --build --abort-on-container-exit --exit-code-from tests
+      continue-on-error: false
+    
+    - name: "📋 Copiar resultados dos testes"
+      if: always()
+      run: |
+        docker-compose -f docker-compose.test.yml run --rm tests sh -c "cp -r /testresults /tmp/" || true
+        docker cp $(docker-compose -f docker-compose.test.yml ps -q tests):/testresults ./testresults || true
+    
+    - name: "🧹 Cleanup"
+      if: always()
+      run: docker-compose -f docker-compose.test.yml down -v
+    
+    - name: "📤 Upload dos resultados dos testes"
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results-docker
+        path: ./testresults/**
+        retention-days: 7
+
+  # Etapa 2: Build nativo e testes com cobertura (só se Etapa 1 passou)
+  build:
+    name: "Etapa 2: Build & Testes com Cobertura"
+    runs-on: ubuntu-latest
+    needs: [test-docker]
+    if: success()
+    
+    steps:
+    - name: "📥 Checkout do código"
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: "⚙️ Setup .NET"
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
     
-    - name: Restore dependencies
+    - name: "📦 Restore dependencies"
       run: dotnet restore
     
-    - name: Build solution
+    - name: "🔨 Build da solution"
       run: dotnet build --configuration Release --no-restore
     
-    - name: Run Unit Tests
-      run: dotnet test --configuration Release --no-build --verbosity normal --filter "Category=Unit" --collect:"XPlat Code Coverage" --results-directory ./coverage
+    - name: "🧪 Executar todos os testes com cobertura"
+      run: dotnet test --configuration Release --no-build --verbosity normal --collect:"XPlat Code Coverage" --results-directory ./coverage
       continue-on-error: false
     
-    - name: Run Integration Tests
-      run: dotnet test --configuration Release --no-build --verbosity normal --filter "Category=Integration" --collect:"XPlat Code Coverage" --results-directory ./coverage
-      continue-on-error: false
-    
-    - name: Upload coverage reports
+    - name: "📊 Upload de cobertura para Codecov"
       uses: codecov/codecov-action@v4
       if: always()
       with:
@@ -52,91 +85,116 @@ jobs:
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     
-    - name: Upload test results
+    - name: "📤 Upload dos resultados dos testes"
       uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: test-results
+        name: test-results-native
         path: |
           **/TestResults/**
           ./coverage/**
         retention-days: 7
 
+  # Etapa 3: Verificação de qualidade de código (só se Etapa 2 passou)
   code-quality:
-    name: Code Quality Checks
+    name: "Etapa 3: Qualidade de Código"
     runs-on: ubuntu-latest
+    needs: [build]
+    if: success()
     
     steps:
-    - name: Checkout code
+    - name: "📥 Checkout do código"
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
     
-    - name: Setup .NET
+    - name: "⚙️ Setup .NET"
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
     
-    - name: Restore dependencies
+    - name: "📦 Restore dependencies"
       run: dotnet restore
     
-    - name: Format check
+    - name: "🎨 Verificar formatação do código"
       run: dotnet format --verify-no-changes --verbosity diagnostic
       continue-on-error: true
     
-    - name: Install dotnet-reportgenerator-globaltool
-      run: dotnet tool install --global dotnet-reportgenerator-globaltool
-    
-    - name: Security scan with .NET security analyzers
+    - name: "🔐 Scan de pacotes vulneráveis"
       run: |
-        dotnet list package --vulnerable --include-transitive
-        dotnet list package --deprecated --include-transitive
+        echo "📋 Verificando pacotes vulneráveis..."
+        dotnet list package --vulnerable --include-transitive || echo "⚠️ Pacotes vulneráveis encontrados"
+      continue-on-error: true
+    
+    - name: "⚠️ Scan de pacotes deprecados"
+      run: |
+        echo "📋 Verificando pacotes deprecados..."
+        dotnet list package --deprecated --include-transitive || echo "⚠️ Pacotes deprecados encontrados"
       continue-on-error: true
 
+  # Etapa 4: Análise estática de código (só se Etapa 3 passou)
   analyze:
-    name: Static Code Analysis
+    name: "Etapa 4: Análise Estática"
     runs-on: ubuntu-latest
+    needs: [code-quality]
+    if: success()
     
     steps:
-    - name: Checkout code
+    - name: "📥 Checkout do código"
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
     
-    - name: Setup .NET
+    - name: "⚙️ Setup .NET"
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
     
-    - name: Restore dependencies
+    - name: "📦 Restore dependencies"
       run: dotnet restore
     
-    - name: Build with analyzers
+    - name: "🔍 Build com analisadores"
       run: dotnet build --configuration Release --no-restore /p:TreatWarningsAsErrors=false /p:WarningLevel=4
     
-    - name: Run Roslyn Analyzers
+    - name: "🔬 Executar Roslyn Analyzers"
       run: dotnet build --no-restore --configuration Release /p:RunAnalyzersDuringBuild=true
       continue-on-error: true
 
+  # Etapa 5: Verificação final de status (só se todas as etapas anteriores passaram)
   build-status:
-    name: Build Status Check
+    name: "Etapa 5: Verificação Final"
     runs-on: ubuntu-latest
-    needs: [build, code-quality, analyze]
+    needs: [test-docker, build, code-quality, analyze]
     if: always()
     
     steps:
-    - name: Check build status
+    - name: "🔍 Verificar status de todas as etapas"
       run: |
+        echo "📊 Status das etapas:"
+        echo "Etapa 1 (Testes Docker): ${{ needs.test-docker.result }}"
+        echo "Etapa 2 (Build & Testes): ${{ needs.build.result }}"
+        echo "Etapa 3 (Qualidade): ${{ needs.code-quality.result }}"
+        echo "Etapa 4 (Análise): ${{ needs.analyze.result }}"
+        echo ""
+        
+        if [ "${{ needs.test-docker.result }}" != "success" ]; then
+          echo "❌ Etapa 1 falhou - Testes em Docker"
+          exit 1
+        fi
+        
         if [ "${{ needs.build.result }}" != "success" ]; then
-          echo "Build failed!"
+          echo "❌ Etapa 2 falhou - Build & Testes com Cobertura"
           exit 1
         fi
+        
         if [ "${{ needs.code-quality.result }}" == "failure" ]; then
-          echo "Code quality checks failed!"
+          echo "❌ Etapa 3 falhou - Qualidade de Código"
           exit 1
         fi
+        
         if [ "${{ needs.analyze.result }}" == "failure" ]; then
-          echo "Static analysis failed!"
+          echo "❌ Etapa 4 falhou - Análise Estática"
           exit 1
         fi
-        echo "All checks passed!"
+        
+        echo "✅ Todas as etapas passaram com sucesso!"

@@ -366,3 +366,4 @@ Thumbs.db
 logs/
 temp/
 *.log
+*.trx
