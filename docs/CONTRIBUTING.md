@@ -445,7 +445,7 @@ git branch -D feat/adicionar-endpoint-produtos
 #### **Docker Build** (`docker-build.yml`)
 - ✅ Build da imagem Docker
 - ✅ Push para Docker Hub
-- ⚡ Executa: Apenas após merge na `main`
+- ⚡ Executa: Em push para as branches `main` e `develop`
 
 ---
 
