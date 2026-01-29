@@ -47,11 +47,13 @@ Este documento descreve o fluxo de trabalho completo para contribuir com o proje
 
 Executadas automaticamente antes de commit/push:
 
-1. **Pre-commit** (`commit-msg`):
-   - Valida formato do commit (Conventional Commits)
+1. **Pre-commit**:
    - Bloqueia commits na branch `main`
 
-2. **Pre-push**:
+2. **Commit-msg**:
+   - Valida formato do commit (Conventional Commits)
+
+3. **Pre-push**:
    - Executa `dotnet build`
    - Executa todos os testes (`dotnet test`)
    - Bloqueia push se algo falhar
