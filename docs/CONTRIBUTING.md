@@ -265,9 +265,12 @@ git commit -m "test: adicionar testes para Product"
 ```
 
 **O que acontece no commit:**
-1. ✅ Husky valida o formato da mensagem
-2. ✅ Verifica se não está na branch `main`
-3. ❌ Bloqueia se formato estiver incorreto
+Husky configura *git hooks* que rodam em sequência durante o `git commit`:
+1. 🔁 **Hook `pre-commit`**: roda antes de abrir o editor da mensagem
+   - Verifica se você não está na branch `main` (bloqueia commits diretos em `main`)
+2. 🔁 **Hook `commit-msg`**: roda depois que a mensagem é escrita
+   - Valida o formato da mensagem seguindo **Conventional Commits**
+   - ❌ Se o formato estiver incorreto, o commit é abortado
 
 **Se o commit for bloqueado:**
 ```bash
