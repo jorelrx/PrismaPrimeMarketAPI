@@ -667,7 +667,7 @@ docs/atualizar-architecture-md
 # ❌ Ruim
 nova-branch
 teste
-jnull/mudancas
+username/mudancas
 ```
 
 ### ✅ Pull Requests
