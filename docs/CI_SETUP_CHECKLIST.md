@@ -219,6 +219,7 @@ npm run prepare
 **Linux/Mac**: Tornar hooks executáveis:
 ```bash
 chmod +x .husky/commit-msg
+chmod +x .husky/pre-commit
 chmod +x .husky/pre-push
 ```
 

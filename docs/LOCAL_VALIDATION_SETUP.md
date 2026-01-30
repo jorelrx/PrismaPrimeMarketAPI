@@ -18,9 +18,11 @@ Este projeto possui **validação local automática** para garantir qualidade do
 ### 🚫 Bloqueios Implementados
 
 1. **Commit Bloqueado** se a mensagem não seguir convenção
-   - ✅ `feat: adiciona novo recurso`
-   - ✅ `fix: corrige bug crítico`
+   - ✅ `feat: Adicionar novo recurso`
+   - ✅ `fix: Corrigir bug crítico`
    - ❌ `adicionei uma feature` (BLOQUEADO)
+   
+   **Regras completas:** [CONTRIBUTING.md](CONTRIBUTING.md#conventional-commits)
 
 2. **Push Bloqueado** se os testes falharem
    - Build completo executado
@@ -85,6 +87,7 @@ Isso criará a pasta `.husky/` com os hooks configurados.
 
 ```bash
 chmod +x .husky/commit-msg
+chmod +x .husky/pre-commit
 chmod +x .husky/pre-push
 ```
 
@@ -104,14 +107,14 @@ npx commitlint --version
 
 ## ⚙️ Como Funciona
 
-### 1️⃣ Hook `commit-msg` (Validação de Mensagem)
+### 1️⃣ Hook `commit-msg` (Validação com Commitlint)
 
 **Quando**: Toda vez que você faz `git commit`
 
 **O que faz**:
 1. Captura a mensagem de commit
-2. Valida contra as regras do `.commitlintrc.json`
-3. **Bloqueia** se não estiver no formato correto
+2. Valida usando **commitlint** com regras do `.commitlintrc.json`
+3. **Bloqueia** se não estiver no formato Conventional Commits
 
 **Exemplo de Uso**:
 ```bash
@@ -229,6 +232,7 @@ npm run prepare
 **Solução**:
 ```bash
 chmod +x .husky/commit-msg
+chmod +x .husky/pre-commit
 chmod +x .husky/pre-push
 ```
 

@@ -224,9 +224,9 @@ graph TB
 
 **Exemplos válidos:**
 ```
-feat: adicionar endpoint de produtos
-fix(auth): corrigir validação de JWT
-docs: atualizar README
+feat: Adicionar endpoint de produtos
+fix(auth): Corrigir validação de JWT
+docs: Atualizar README
 ```
 
 ---
@@ -333,10 +333,10 @@ docs: atualizar README
 **Exemplos:**
 ```bash
 # ✅ CORRETO
-git commit -m "feat: adicionar endpoint de produtos"
-git commit -m "fix(auth): corrigir validação de token JWT"
-git commit -m "docs: atualizar guia de CI"
-git commit -m "test(orders): adicionar testes de integração"
+git commit -m "feat: Adicionar endpoint de produtos"
+git commit -m "fix(auth): Corrigir validação de token JWT"
+git commit -m "docs: Atualizar guia de CI"
+git commit -m "test(orders): Adicionar testes de integração"
 
 # ❌ ERRADO
 git commit -m "adicionei nova feature"
@@ -354,9 +354,9 @@ git commit -m "WIP"
 
 **Exemplo de título:**
 ```
-feat: implementar autenticação JWT
-fix: resolver cálculo incorreto de frete
-docs: adicionar documentação de API
+feat: Implementar autenticação JWT
+fix: Resolver cálculo incorreto de frete
+docs: Adicionar documentação de API
 ```
 
 ### Status Checks Obrigatórios
@@ -392,7 +392,7 @@ git checkout -b feat/nome-da-feature
 
 # Commit seguindo Conventional Commits
 git add .
-git commit -m "feat: adicionar funcionalidade X"
+git commit -m "feat: Adicionar funcionalidade X"
 
 # Push da branch
 git push origin feat/nome-da-feature
@@ -404,7 +404,7 @@ git push origin feat/nome-da-feature
 2. Clique em **Pull requests** → **New pull request**
 3. Selecione sua branch
 4. Preencha:
-   - **Título**: seguindo Conventional Commits (ex: `feat: adicionar funcionalidade X`)
+   - **Título**: seguindo Conventional Commits (ex: `feat: Adicionar funcionalidade X`)
    - **Descrição**: explique as mudanças, adicione screenshots se necessário
    - **Reviewers**: adicione revisores
    - **Labels**: adicione labels relevantes (feat, fix, etc)

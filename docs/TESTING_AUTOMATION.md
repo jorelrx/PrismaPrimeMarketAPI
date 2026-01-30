@@ -185,7 +185,7 @@ graph LR
 
 # 3. Commit
 git add .
-git commit -m "feat: nova funcionalidade"
+git commit -m "feat: Nova funcionalidade"
 
 # 4. Push (testes rodam automaticamente)
 git push origin main
