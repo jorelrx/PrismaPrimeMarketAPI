@@ -32,7 +32,7 @@ Bem-vindo à documentação do **Prisma Prime Market API**!
   Comandos úteis, git workflow, troubleshooting
 
 #### Fluxogramas Visuais
-- [**CI_CD_FLOWCHART.md**](CI_CD_FLOWCHART.md)  
+- [**CI_FLOWCHART.md**](CI_FLOWCHART.md)  
   Diagramas ASCII dos workflows e processos
 
 ### 🏛️ Decisões Arquiteturais (ADRs)
@@ -63,7 +63,7 @@ Bem-vindo à documentação do **Prisma Prime Market API**!
 1. Leia: [CI_CD_IMPLEMENTATION.md](CI_CD_IMPLEMENTATION.md)
 2. Configure: [CI_CD_SETUP.md](CI_CD_SETUP.md)
 3. Workflows: [../.github/workflows/](.../.github/workflows/)
-4. Fluxos: [CI_CD_FLOWCHART.md](CI_CD_FLOWCHART.md)
+4. Fluxos: [CI_FLOWCHART.md](CI_FLOWCHART.md)
 
 ## 📊 Documentação por Tópico
 
@@ -86,7 +86,7 @@ CI_CD_SUMMARY.md          → 📌 Resumo executivo (START HERE)
 CI_CD_IMPLEMENTATION.md   → O que foi implementado
 CI_CD_SETUP.md            → Como configurar
 QUICK_REFERENCE.md        → Comandos úteis
-CI_CD_FLOWCHART.md        → Fluxogramas visuais
+CI_FLOWCHART.md           → Fluxogramas visuais
 ../.github/workflows/     → Código dos workflows
 ```
 
@@ -94,7 +94,7 @@ CI_CD_FLOWCHART.md        → Fluxogramas visuais
 ```
 CONTRIBUTING.md           → Como contribuir
 QUICK_REFERENCE.md        → Comandos Git e convenções
-CI_CD_FLOWCHART.md        → Conventional Commits
+CI_FLOWCHART.md           → Conventional Commits
 ```
 
 ## 🔍 Busca Rápida
@@ -106,7 +106,7 @@ CI_CD_FLOWCHART.md        → Conventional Commits
 - **Criar um PR** → [CONTRIBUTING.md](CONTRIBUTING.md)
 - **Executar testes** → [QUICK_REFERENCE.md](QUICK_REFERENCE.md#build--testes)
 - **Entender um workflow** → [../.github/workflows/README.md](../.github/workflows/README.md)
-- **Ver fluxos visuais** → [CI_CD_FLOWCHART.md](CI_CD_FLOWCHART.md)
+- **Ver fluxos visuais** → [CI_FLOWCHART.md](CI_FLOWCHART.md)
 - **Comandos rápidos** → [QUICK_REFERENCE.md](QUICK_REFERENCE.md)
 
 ### Quero saber sobre...
@@ -118,7 +118,7 @@ CI_CD_FLOWCHART.md        → Conventional Commits
 - **Response Pattern** → [API.md](API.md#-padrão-de-resposta-response-pattern) + [QUICK_REFERENCE.md](QUICK_REFERENCE.md#-padrão-de-response-pattern)
 - **PostgreSQL + pgvector** → [AI_INTEGRATION.md](AI_INTEGRATION.md)
 - **GitHub Actions** → [CI_CD_IMPLEMENTATION.md](CI_CD_IMPLEMENTATION.md)
-- **Conventional Commits** → [CI_CD_FLOWCHART.md](CI_CD_FLOWCHART.md)
+- **Conventional Commits** → [CI_FLOWCHART.md](CI_FLOWCHART.md)
 - **CodeQL** → [CI_CD_SETUP.md](CI_CD_SETUP.md)
 
 ## 📈 Roadmap de Leitura
@@ -156,7 +156,7 @@ CI_CD_FLOWCHART.md        → Conventional Commits
 ```
 1. CONTRIBUTING.md
 2. QUICK_REFERENCE.md (Git Workflow)
-3. CI_CD_FLOWCHART.md (Conventional Commits)
+3. CI_FLOWCHART.md (Conventional Commits)
 4. Faça seu código
 5. Crie PR seguindo os padrões
 ```
@@ -174,7 +174,7 @@ CI_CD_FLOWCHART.md        → Conventional Commits
 1. README.md (principal)
 2. ARCHITECTURE.md
 3. CI_CD_IMPLEMENTATION.md
-4. CI_CD_FLOWCHART.md (para slides visuais)
+4. CI_FLOWCHART.md (para slides visuais)
 ```
 
 ## 🔗 Links Externos
@@ -227,7 +227,7 @@ CI_CD_FLOWCHART.md        → Conventional Commits
 | AI_INTEGRATION.md | ✅ Completo | 2026-01-06 |
 | CI_CD_SUMMARY.md | ✅ Completo | 2026-01-19 |
 | CI_CD_SETUP.md | ✅ Completo | 2026-01-19 |
-| CI_CD_FLOWCHART.md | ✅ Completo | 2026-01-19 |
+| CI_FLOWCHART.md | ✅ Completo | 2026-01-30 |
 
 ---
 
