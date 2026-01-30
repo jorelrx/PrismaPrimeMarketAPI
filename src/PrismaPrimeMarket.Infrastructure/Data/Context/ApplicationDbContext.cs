@@ -14,6 +14,8 @@ public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<Guid>, 
 
     // DbSets
     public new DbSet<User> Users => Set<User>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<PasswordReset> PasswordResets => Set<PasswordReset>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

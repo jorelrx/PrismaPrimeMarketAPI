@@ -8,6 +8,7 @@ using PrismaPrimeMarket.Domain.Interfaces.Repositories;
 using PrismaPrimeMarket.Infrastructure.Data;
 using PrismaPrimeMarket.Infrastructure.Data.Context;
 using PrismaPrimeMarket.Infrastructure.Repositories;
+using PrismaPrimeMarket.Infrastructure.Services;
 
 namespace PrismaPrimeMarket.CrossCutting.IoC;
 
@@ -40,6 +41,11 @@ public static class DependencyInjection
 
         // Repositories
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+        services.AddScoped<IPasswordResetRepository, PasswordResetRepository>();
+
+        // Services
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
 
         return services;
     }
