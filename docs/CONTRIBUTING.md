@@ -718,7 +718,6 @@ public void Test1()
 - [Estrutura do Projeto](PROJECT_STRUCTURE.md)
 - [API](API.md)
 - [CI/CD](CI_README.md)
-- [Referência Rápida](QUICK_REFERENCE.md)
 
 ### Guias de CI/CD
 - [Workflow Guide](CI_WORKFLOW_GUIDE.md)
