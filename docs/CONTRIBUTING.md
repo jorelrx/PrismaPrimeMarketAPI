@@ -50,8 +50,9 @@ Executadas automaticamente antes de commit/push:
 1. **Pre-commit**:
    - Bloqueia commits na branch `main`
 
-2. **Commit-msg**:
-   - Valida formato do commit (Conventional Commits)
+2. **Commit-msg (Commitlint)**:
+   - Valida formato usando commitlint com `.commitlintrc.json`
+   - Garante Conventional Commits
 
 3. **Pre-push**:
    - Executa `dotnet build`
@@ -279,8 +280,9 @@ git commit -m "test: Adicionar testes para Product"
 Husky configura *git hooks* que rodam em sequência durante o `git commit`:
 1. 🔁 **Hook `pre-commit`**: roda antes de abrir o editor da mensagem
    - Verifica se você não está na branch `main` (bloqueia commits diretos em `main`)
-2. 🔁 **Hook `commit-msg`**: roda depois que a mensagem é escrita
-   - Valida o formato da mensagem seguindo **Conventional Commits**
+2. 🔁 **Hook `commit-msg`**: roda após escrever a mensagem
+   - Valida usando **commitlint** com `.commitlintrc.json`
+   - Garante formato **Conventional Commits**
    - ❌ Se o formato estiver incorreto, o commit é abortado
 
 **Se o commit for bloqueado:**
@@ -407,8 +409,9 @@ git branch -D feat/adicionar-endpoint-produtos
 - ⚡ Executa: Antes de criar o commit
 
 #### **commit-msg**
-- ✅ Valida formato Conventional Commits
-- ⚡ Executa: Imediatamente ao fazer commit
+- ✅ Valida formato Conventional Commits usando **commitlint**
+- ✅ Configurado em `.commitlintrc.json`
+- ⚡ Executa: Imediatamente após escrever mensagem de commit
 
 #### **pre-push**
 - ✅ Executa build do projeto

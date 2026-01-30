@@ -1,25 +1,10 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
+# Bloqueio de commit direto na branch main
 branch=$(git symbolic-ref --short HEAD 2>/dev/null || echo "")
 if [ "$branch" = "main" ]; then
   echo "🚫 Commit direto na branch main é proibido! Use uma feature branch e PR."
-  exit 1
-fi
-
-# Validação Conventional Commits
-commit_msg_file=$1
-if [ -z "$commit_msg_file" ]; then
-  commit_msg_file=".git/COMMIT_EDITMSG"
-fi
-commit_msg=$(head -n1 "$commit_msg_file")
-
-# Regex: tipo(minúsculo)(escopo opcional): Descrição (primeira maiúscula, sem ponto final, até 100 chars)
-conventional_regex='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-zA-Z0-9\-]+\))?: [A-Z][^\.]{0,98}$'
-
-if ! echo "$commit_msg" | grep -Eq "$conventional_regex"; then
-  echo "❌ Commit inválido! Use: tipo: Descrição iniciando com maiúscula, sem ponto final, até 100 caracteres."
-  echo "Exemplo: feat: Adicionar endpoint de produtos"
   exit 1
 fi
 

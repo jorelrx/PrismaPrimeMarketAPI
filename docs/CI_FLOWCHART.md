@@ -24,32 +24,35 @@ flowchart TD
     B --> C[Criar branch feat/xxx]
     C --> D[Desenvolver alterações]
     D --> E[git add + git commit]
-    E --> F{Hook pre-commit<br/>Valida formato}
-    F -->|❌ Inválido| G[Corrigir mensagem]
+    E --> F{Hook pre-commit<br/>Verifica branch}
+    F -->|❌ Branch main| G[Usar feature branch]
     G --> E
-    F -->|✅ Válido| H[git push]
-    H --> I{Hook pre-push<br/>Build & Testes}
-    I -->|❌ Falhou| J[Corrigir código]
-    J --> E
-    I -->|✅ Passou| K[Push para GitHub]
-    K --> L[Criar Pull Request]
-    L --> M[GitHub Actions<br/>3 Workflows]
-    M --> N[PR Checks]
-    M --> O[CI Pipeline]
-    M --> P[Code Quality]
-    N --> Q{Todos passaram?}
-    O --> Q
-    P --> Q
-    Q -->|❌ Não| R[Corrigir e push]
-    R --> M
-    Q -->|✅ Sim| S[Code Review]
-    S --> T{Aprovado?}
-    T -->|❌ Não| U[Fazer mudanças]
-    U --> R
-    T -->|✅ Sim| V[Squash & Merge]
-    V --> W[Merge na main]
-    W --> X[Docker Build & Push]
-    X --> Y[Fim]
+    F -->|✅ Outra branch| H{Commitlint<br/>Valida formato}
+    H -->|❌ Inválido| I[Corrigir mensagem]
+    I --> E
+    H -->|✅ Válido| J[git push]
+    J --> K{Hook pre-push<br/>Build & Testes}
+    K -->|❌ Falhou| L[Corrigir código]
+    L --> E
+    K -->|✅ Passou| M[Push para GitHub]
+    M --> N[Criar Pull Request]
+    N --> O[GitHub Actions<br/>3 Workflows]
+    O --> P[PR Checks]
+    O --> Q[CI Pipeline]
+    O --> R[Code Quality]
+    P --> S{Todos passaram?}
+    Q --> S
+    R --> S
+    S -->|❌ Não| T[Corrigir e push]
+    T --> O
+    S -->|✅ Sim| U[Code Review]
+    U --> V{Aprovado?}
+    V -->|❌ Não| W[Fazer mudanças]
+    W --> T
+    V -->|✅ Sim| X[Squash & Merge]
+    X --> Y[Merge na main]
+    Y --> Z[Docker Build & Push]
+    Z --> AA[Fim]
 ```
 
 ---
@@ -172,17 +175,17 @@ flowchart TD
     F --> A
 ```
 
-### Commit-msg hook: validação do formato da mensagem
+### Commitlint: validação do formato da mensagem
 ```mermaid
 flowchart TD
-    A[Salva mensagem de commit] --> B[Hook commit-msg]
-    B --> C{Formato válido?<br/>tipo: Descrição}
-    C -->|❌ Não| D[❌ Bloqueado<br/>Formato incorreto]
-    C -->|✅ Sim| E{Primeira letra<br/>maiúscula?}
+    A[Salva mensagem de commit] --> B[Commitlint<br/>.commitlintrc.json]
+    B --> C{Tipo válido?<br/>feat, fix, docs, etc}
+    C -->|❌ Não| D[❌ Bloqueado<br/>Tipo inválido]
+    C -->|✅ Sim| E{Formato sentence-case?<br/>Primeira maiúscula}
     E -->|❌ Não| D
     E -->|✅ Sim| F{Sem ponto final?}
     F -->|❌ Não| D
-    F -->|✅ Sim| G{Menos 100 chars?}
+    F -->|✅ Sim| G{Header ≤ 100 chars?}
     G -->|❌ Não| D
     G -->|✅ Sim| H[✅ Commit aceito]
     D --> I[Tentar novamente]
