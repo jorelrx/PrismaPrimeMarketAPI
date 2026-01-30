@@ -26,4 +26,9 @@ public interface IJwtTokenService
     /// Obtém o userId de um token
     /// </summary>
     Guid? GetUserIdFromToken(string token);
+
+    /// <summary>
+    /// Parse configuração de expiração (ex: "15m", "7d")
+    /// </summary>
+    TimeSpan ParseExpirationConfig(string configKey);
 }

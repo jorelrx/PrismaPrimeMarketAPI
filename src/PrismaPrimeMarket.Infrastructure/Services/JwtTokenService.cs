@@ -105,13 +105,27 @@ public class JwtTokenService : IJwtTokenService
         return null;
     }
 
+    /// <summary>
+    /// Método público para parsear configurações de tempo de expiração
+    /// </summary>
+    public TimeSpan ParseExpirationConfig(string configKey)
+    {
+        var expiration = _configuration[configKey];
+        return ParseExpiration(expiration ?? "15m");
+    }
+
     private TimeSpan ParseExpiration(string expiration)
     {
         // Suporta formatos como "15m", "7d", "2h"
         if (string.IsNullOrEmpty(expiration))
             return TimeSpan.FromMinutes(15);
 
-        var value = int.Parse(expiration[..^1]);
+        if (expiration.Length < 2)
+            return TimeSpan.FromMinutes(15);
+
+        if (!int.TryParse(expiration[..^1], out var value) || value <= 0)
+            return TimeSpan.FromMinutes(15);
+
         var unit = expiration[^1];
 
         return unit switch

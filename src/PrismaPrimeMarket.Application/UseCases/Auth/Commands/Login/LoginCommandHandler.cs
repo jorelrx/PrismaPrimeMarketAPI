@@ -1,7 +1,6 @@
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using PrismaPrimeMarket.Application.DTOs.Auth;
 using PrismaPrimeMarket.Application.DTOs.User;
 using PrismaPrimeMarket.Domain.Entities;
@@ -22,7 +21,6 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto
     private readonly IRefreshTokenRepository _refreshTokenRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
-    private readonly IConfiguration _configuration;
 
     public LoginCommandHandler(
         UserManager<User> userManager,
@@ -30,8 +28,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto
         IJwtTokenService jwtTokenService,
         IRefreshTokenRepository refreshTokenRepository,
         IUnitOfWork unitOfWork,
-        IMapper mapper,
-        IConfiguration configuration)
+        IMapper mapper)
     {
         _userManager = userManager;
         _userRepository = userRepository;
@@ -39,7 +36,6 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto
         _refreshTokenRepository = refreshTokenRepository;
         _unitOfWork = unitOfWork;
         _mapper = mapper;
-        _configuration = configuration;
     }
 
     public async Task<AuthResponseDto> Handle(LoginCommand request, CancellationToken cancellationToken)
@@ -70,8 +66,8 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto
         var refreshToken = _jwtTokenService.GenerateRefreshToken();
 
         // Calcula as datas de expiração
-        var accessExpiration = ParseExpiration(_configuration["Jwt:AccessExpiration"] ?? "15m");
-        var refreshExpiration = ParseExpiration(_configuration["Jwt:RefreshExpiration"] ?? "7d");
+        var accessExpiration = _jwtTokenService.ParseExpirationConfig("Jwt:AccessExpiration");
+        var refreshExpiration = _jwtTokenService.ParseExpirationConfig("Jwt:RefreshExpiration");
 
         var accessExpiresAt = DateTime.UtcNow.Add(accessExpiration);
         var refreshExpiresAt = DateTime.UtcNow.Add(refreshExpiration);
@@ -95,23 +91,6 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto
                 AccessTokenExpiresAt = accessExpiresAt,
                 RefreshTokenExpiresAt = refreshExpiresAt
             }
-        };
-    }
-
-    private TimeSpan ParseExpiration(string expiration)
-    {
-        if (string.IsNullOrEmpty(expiration))
-            return TimeSpan.FromMinutes(15);
-
-        var value = int.Parse(expiration[..^1]);
-        var unit = expiration[^1];
-
-        return unit switch
-        {
-            'm' => TimeSpan.FromMinutes(value),
-            'h' => TimeSpan.FromHours(value),
-            'd' => TimeSpan.FromDays(value),
-            _ => TimeSpan.FromMinutes(15)
         };
     }
 }

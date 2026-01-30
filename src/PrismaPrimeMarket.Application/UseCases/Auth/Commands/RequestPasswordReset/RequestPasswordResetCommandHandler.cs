@@ -48,11 +48,10 @@ public class RequestPasswordResetCommandHandler : IRequestHandler<RequestPasswor
         await _unitOfWork.CommitAsync(cancellationToken);
 
         // TODO: Enviar email com o token de reset
-        // Por enquanto, apenas loga o token (em produção, isso deve ser enviado por email)
+        // Por enquanto, apenas loga o evento (em produção, isso deve ser enviado por email)
         _logger.LogInformation(
-            "Token de reset de senha gerado para usuário {UserId}. Token: {Token}",
-            user.Id,
-            resetToken);
+            "Token de reset de senha gerado para usuário {UserId}",
+            user.Id);
 
         return Unit.Value;
     }

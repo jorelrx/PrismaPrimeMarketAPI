@@ -1,6 +1,5 @@
 using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using PrismaPrimeMarket.Application.DTOs.Auth;
 using PrismaPrimeMarket.Domain.Entities;
 using PrismaPrimeMarket.Domain.Exceptions;
@@ -18,20 +17,17 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, A
     private readonly IJwtTokenService _jwtTokenService;
     private readonly IRefreshTokenRepository _refreshTokenRepository;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IConfiguration _configuration;
 
     public RefreshTokenCommandHandler(
         UserManager<User> userManager,
         IJwtTokenService jwtTokenService,
         IRefreshTokenRepository refreshTokenRepository,
-        IUnitOfWork unitOfWork,
-        IConfiguration configuration)
+        IUnitOfWork unitOfWork)
     {
         _userManager = userManager;
         _jwtTokenService = jwtTokenService;
         _refreshTokenRepository = refreshTokenRepository;
         _unitOfWork = unitOfWork;
-        _configuration = configuration;
     }
 
     public async Task<AuthTokensDto> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
@@ -48,7 +44,7 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, A
         // Busca o usuário
         var user = await _userManager.FindByIdAsync(refreshTokenEntity.UserId.ToString());
         if (user == null || !user.IsActive)
-            throw new InvalidTokenException("Usuário inválido ou inativo");
+            throw new InvalidTokenException("Token inválido ou expirado");
 
         // Obtém os roles do usuário
         var roles = await _userManager.GetRolesAsync(user);
@@ -58,8 +54,8 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, A
         var newRefreshToken = _jwtTokenService.GenerateRefreshToken();
 
         // Calcula as datas de expiração
-        var accessExpiration = ParseExpiration(_configuration["Jwt:AccessExpiration"] ?? "15m");
-        var refreshExpiration = ParseExpiration(_configuration["Jwt:RefreshExpiration"] ?? "7d");
+        var accessExpiration = _jwtTokenService.ParseExpirationConfig("Jwt:AccessExpiration");
+        var refreshExpiration = _jwtTokenService.ParseExpirationConfig("Jwt:RefreshExpiration");
 
         var accessExpiresAt = DateTime.UtcNow.Add(accessExpiration);
         var refreshExpiresAt = DateTime.UtcNow.Add(refreshExpiration);
@@ -78,23 +74,6 @@ public class RefreshTokenCommandHandler : IRequestHandler<RefreshTokenCommand, A
             RefreshToken = newRefreshToken,
             AccessTokenExpiresAt = accessExpiresAt,
             RefreshTokenExpiresAt = refreshExpiresAt
-        };
-    }
-
-    private TimeSpan ParseExpiration(string expiration)
-    {
-        if (string.IsNullOrEmpty(expiration))
-            return TimeSpan.FromMinutes(15);
-
-        var value = int.Parse(expiration[..^1]);
-        var unit = expiration[^1];
-
-        return unit switch
-        {
-            'm' => TimeSpan.FromMinutes(value),
-            'h' => TimeSpan.FromHours(value),
-            'd' => TimeSpan.FromDays(value),
-            _ => TimeSpan.FromMinutes(15)
         };
     }
 }
