@@ -161,23 +161,32 @@ flowchart TD
 
 **Formato:** `tipo(escopo): Descrição com primeira maiúscula`
 
+### Pre-commit hook: bloqueio de commit na main
 ```mermaid
 flowchart TD
     A[git commit] --> B[Hook pre-commit]
     B --> C{Branch main?}
-    C -->|✅ Sim| D[❌ Bloqueado<br/>Não commit na main]
-    C -->|❌ Não| E{Formato válido?<br/>tipo: Descrição}
-    E -->|❌ Não| F[❌ Bloqueado<br/>Formato incorreto]
-    E -->|✅ Sim| G{Primeira letra<br/>maiúscula?}
-    G -->|❌ Não| F
-    G -->|✅ Sim| H{Sem ponto final?}
-    H -->|❌ Não| F
-    H -->|✅ Sim| I{Menos 100 chars?}
-    I -->|❌ Não| F
-    I -->|✅ Sim| J[✅ Commit aceito]
-    D --> K[Tentar novamente]
-    F --> K
-    K --> A
+    C -->|✅ Sim| D[❌ Bloqueado<br/>Não pode commitar na main]
+    C -->|❌ Não| E[Abre editor de mensagem]
+    D --> F[Tentar novamente]
+    F --> A
+```
+
+### Commit-msg hook: validação do formato da mensagem
+```mermaid
+flowchart TD
+    A[Salva mensagem de commit] --> B[Hook commit-msg]
+    B --> C{Formato válido?<br/>tipo: Descrição}
+    C -->|❌ Não| D[❌ Bloqueado<br/>Formato incorreto]
+    C -->|✅ Sim| E{Primeira letra<br/>maiúscula?}
+    E -->|❌ Não| D
+    E -->|✅ Sim| F{Sem ponto final?}
+    F -->|❌ Não| D
+    F -->|✅ Sim| G{Menos 100 chars?}
+    G -->|❌ Não| D
+    G -->|✅ Sim| H[✅ Commit aceito]
+    D --> I[Tentar novamente]
+    I --> A
 ```
 
 ---
