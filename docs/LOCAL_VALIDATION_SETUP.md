@@ -18,9 +18,11 @@ Este projeto possui **validação local automática** para garantir qualidade do
 ### 🚫 Bloqueios Implementados
 
 1. **Commit Bloqueado** se a mensagem não seguir convenção
-   - ✅ `feat: adiciona novo recurso`
-   - ✅ `fix: corrige bug crítico`
+   - ✅ `feat: Adicionar novo recurso`
+   - ✅ `fix: Corrigir bug crítico`
    - ❌ `adicionei uma feature` (BLOQUEADO)
+   
+   **Regras completas:** [CONTRIBUTING.md](CONTRIBUTING.md#conventional-commits)
 
 2. **Push Bloqueado** se os testes falharem
    - Build completo executado

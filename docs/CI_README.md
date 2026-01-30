@@ -117,14 +117,15 @@ Veja todos os detalhes em [CI_WORKFLOW_GUIDE.md](CI_WORKFLOW_GUIDE.md)
 
 - ❌ Push direto **BLOQUEADO**
 - ✅ Apenas via Pull Request
-- ✅ Requer aprovação
-- ✅ Requer todos os checks passarem
+## 🎯 Convenções de Commits e PRs
 
 ### Commits
 
 - ✅ Devem seguir **Conventional Commits**
-- ✅ Formato: `tipo: descrição`
+- ✅ Formato: `tipo: Descrição começando com maiúscula`
 - ✅ Tipos: feat, fix, docs, style, refactor, perf, test, build, ci, chore
+
+**Guia completo:** [CONTRIBUTING.md](CONTRIBUTING.md#conventional-commits)
 
 ### Pull Requests
 
@@ -133,32 +134,7 @@ Veja todos os detalhes em [CI_WORKFLOW_GUIDE.md](CI_WORKFLOW_GUIDE.md)
 - ✅ Pelo menos 1 aprovação
 - ✅ Conversas resolvidas
 
----
-
-## 🎓 Conventional Commits
-
-### Formato
-
-```
-tipo(escopo): descrição
-
-[corpo opcional]
-
-[rodapé opcional]
-```
-
-### Tipos Principais
-
-| Tipo | Quando usar | Exemplo |
-|------|-------------|---------|
-| `feat` | Nova funcionalidade | `feat: adicionar login social` |
-| `fix` | Correção de bug | `fix: resolver erro de timeout` |
-| `docs` | Documentação | `docs: atualizar README` |
-| `test` | Testes | `test: adicionar teste unitário` |
-| `refactor` | Refatoração | `refactor: extrair método comum` |
-| `ci` | CI/Workflows | `ci: atualizar workflow` |
-
-**Mais exemplos em:** [CI_QUICK_REFERENCE.md](CI_QUICK_REFERENCE.md)
+**Guia completo:** [CONTRIBUTING.md](CONTRIBUTING.md#pull-requests)
 
 ---
 
@@ -176,8 +152,10 @@ git checkout -b feat/minha-feature
 
 ```bash
 git add .
-git commit -m "feat: adicionar nova funcionalidade"
+git commit -m "feat: Adicionar nova funcionalidade"
 ```
+
+**Consulte:** [CONTRIBUTING.md](CONTRIBUTING.md#conventional-commits) para regras completas
 
 ### 3. Push e PR
 
@@ -216,7 +194,7 @@ git push origin feat/minha-feature
 - **Build failed**: Verifique se o código compila localmente
 - **Tests failed**: Rode os testes localmente
 - **Format check failed**: Execute `dotnet format`
-- **Conventional commits failed**: Use formato correto de commit
+- **Conventional commits failed**: Consulte [CONTRIBUTING.md](CONTRIBUTING.md#conventional-commits)
 
 **Mais soluções em:** [CI_WORKFLOW_GUIDE.md](CI_WORKFLOW_GUIDE.md#-troubleshooting)
 

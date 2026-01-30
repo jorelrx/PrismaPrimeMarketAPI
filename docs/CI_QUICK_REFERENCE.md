@@ -57,66 +57,38 @@ git pull origin main
 git checkout -b feat/nome-da-feature
 ```
 
-### 2. Fazer Commits (Conventional Commits)
+### 2. Fazer Commits
 
-**IMPORTANTE:** Commits fora da convenção serão **BLOQUEADOS AUTOMATICAMENTE** pelo commitlint local!
+**IMPORTANTE:** Siga as convenções de commit definidas em [CONTRIBUTING.md](CONTRIBUTING.md#conventional-commits)
 
 ```bash
-# ✅ Features (aceito)
-git commit -m "feat: adicionar endpoint de produtos"
-git commit -m "feat(auth): implementar autenticação JWT"
+# Fazer commit (será validado automaticamente)
+git add .
+git commit -m "feat: Adicionar endpoint de produtos"
 
-# ✅ Bug Fixes (aceito)
-git commit -m "fix: corrigir validação de email"
-git commit -m "fix(orders): resolver cálculo de frete"
-
-# ✅ Docs (aceito)
-git commit -m "docs: atualizar README"
-git commit -m "docs(api): adicionar documentação de endpoints"
-
-# ✅ Refactor (aceito)
-git commit -m "refactor: reorganizar estrutura de pastas"
-
-# ✅ Tests (aceito)
-git commit -m "test: adicionar testes de integração"
-
-# ✅ CI (aceito)
-git commit -m "ci: atualizar workflow de build"
-
-# ✅ Chore (aceito)
-git commit -m "chore: atualizar dependências"
-
-# ❌ Inválido (BLOQUEADO)
-git commit -m "adicionando nova feature"
-# Erro: subject may not be empty [subject-empty]
-
-# 🚨 Bypass (somente emergência!)
-git commit -m "qualquer mensagem" --no-verify
+# Consulte CONTRIBUTING.md para:
+# - Formato correto de commits (Conventional Commits)
+# - Exemplos válidos e inválidos
+# - Tipos de commits aceitos
+# - Regras de validação
 ```
 
 ### 3. Push e Pull Request
 
-**IMPORTANTE:** Push será **BLOQUEADO** se build ou testes falharem localmente!
-
 ```bash
-# Push da branch (roda build + testes automaticamente)
+# Push da branch (validações automáticas executam)
 git push origin feat/nome-da-feature
 
-# Saída esperada:
-# 🧪 Executando testes locais antes do push...
-# ⏳ Buildando o projeto...
-# ✅ Build concluído com sucesso!
-# ⏳ Executando testes...
-# ✅ Todos os testes passaram!
-# 🚀 Push liberado!
-
-# 🚨 Bypass (somente emergência!)
-git push origin feat/nome-da-feature --no-verify
-
 # Abrir PR no GitHub
-# Título do PR também deve seguir Conventional Commits!
-# Exemplo: "feat: adicionar funcionalidade X"
+# Consulte CONTRIBUTING.md para regras de PR e títulos
 ```
+
+**Validações automáticas no push:**
+- Build do projeto
+- Execução de todos os testes
+- Bloqueio se falhar
+
+**Detalhes completos:** [CONTRIBUTING.md](CONTRIBUTING.md#push)
 
 ### 4. Após Aprovação
 
@@ -241,7 +213,7 @@ dotnet test --verbosity detailed
 # Corrigir formatação
 dotnet format
 git add .
-git commit -m "style: corrigir formatação"
+git commit -m "style: Corrigir formatação"
 git push
 ```
 
@@ -257,14 +229,14 @@ npm run prepare
 
 **Commit bloqueado:**
 ```bash
-# ✅ Usar formato correto
-git commit -m "feat: adiciona nova feature"
-
-# Tipos válidos: feat, fix, docs, style, refactor, perf, test, build, ci, chore
+# ✅ Consulte CONTRIBUTING.md para formato correto
+# Exemplo: feat: Adicionar nova feature
 
 # 🚨 Bypass (somente emergência)
 git commit -m "mensagem qualquer" --no-verify
 ```
+
+**Regras completas de commits:** [CONTRIBUTING.md](CONTRIBUTING.md#conventional-commits)
 
 **Push bloqueado por testes:**
 ```bash
@@ -331,21 +303,26 @@ Configure em **Settings → Secrets and variables → Actions**:
 
 ---
 
-## 🎯 Conventional Commits - Tipos
+## 📚 Documentação Relacionada
 
-| Tipo | Descrição | Exemplo |
-|------|-----------|---------|
-| `feat` | Nova funcionalidade | `feat: adicionar login social` |
-| `fix` | Correção de bug | `fix: resolver erro de timeout` |
-| `docs` | Documentação | `docs: atualizar README` |
-| `style` | Formatação | `style: corrigir indentação` |
-| `refactor` | Refatoração | `refactor: extrair método comum` |
-| `perf` | Performance | `perf: otimizar query SQL` |
-| `test` | Testes | `test: adicionar teste unitário` |
-| `build` | Build system | `build: atualizar dependências` |
-| `ci` | CI/Workflows | `ci: adicionar workflow de deploy` |
-| `chore` | Manutenção | `chore: limpar código morto` |
-| `revert` | Reverter commit | `revert: desfazer mudança X` |
+### Guias Completos
+
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Guia completo de contribuição
+  - Conventional Commits (formato, exemplos, regras)
+  - Tipos de contribuições
+  - Processo passo a passo
+  - Boas práticas de commits e PRs
+  - Troubleshooting detalhado
+
+- **[CI_WORKFLOW_GUIDE.md](CI_WORKFLOW_GUIDE.md)** - Detalhes dos workflows
+  - Descrição detalhada de cada workflow
+  - Configuração e customização
+  - Entendimento técnico dos pipelines
+
+- **[CI_SETUP_CHECKLIST.md](CI_SETUP_CHECKLIST.md)** - Setup do CI/CD
+  - Configuração inicial do repositório
+  - Branch protection rules
+  - Secrets e configurações
 
 ---
 
