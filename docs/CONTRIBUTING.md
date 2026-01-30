@@ -623,7 +623,7 @@ Sempre que usar bypass:
 
 ```bash
 # Bypass validações locais (use apenas nos cenários descritos acima)
-git commit -m "fix: hotfix crítico: descrição do problema (bypass explicado no PR)" --no-verify
+git commit -m "fix: Corrigir problema crítico em produção (bypass explicado no PR)" --no-verify
 git push --no-verify
 
 # ⚠️ Não abuse! Use apenas em emergências reais e sempre documente o motivo.
