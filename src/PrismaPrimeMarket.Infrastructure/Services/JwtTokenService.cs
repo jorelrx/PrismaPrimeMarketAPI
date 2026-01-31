@@ -86,7 +86,15 @@ public class JwtTokenService : IJwtTokenService
             var principal = tokenHandler.ValidateToken(token, validationParameters, out _);
             return principal;
         }
-        catch
+        catch (SecurityTokenExpiredException)
+        {
+            return null;
+        }
+        catch (SecurityTokenException)
+        {
+            return null;
+        }
+        catch (ArgumentException)
         {
             return null;
         }
