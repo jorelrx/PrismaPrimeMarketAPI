@@ -8,16 +8,11 @@ namespace PrismaPrimeMarket.Infrastructure.Repositories;
 /// <summary>
 /// Implementação do repositório de Password Resets
 /// </summary>
-public class PasswordResetRepository : BaseRepository<PasswordReset>, IPasswordResetRepository
+public class PasswordResetRepository(ApplicationDbContext context) : BaseRepository<PasswordReset>(context), IPasswordResetRepository
 {
-    public PasswordResetRepository(ApplicationDbContext context) : base(context)
-    {
-    }
-
     public async Task<PasswordReset?> GetByTokenAsync(string token, CancellationToken cancellationToken = default)
     {
         return await _context.Set<PasswordReset>()
-            .Include(pr => pr.User)
             .FirstOrDefaultAsync(pr => pr.Token == token, cancellationToken);
     }
 
