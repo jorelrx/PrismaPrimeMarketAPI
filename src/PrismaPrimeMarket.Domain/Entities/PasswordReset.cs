@@ -41,6 +41,9 @@ public class PasswordReset : BaseEntity, IAggregateRoot
         if (userId == Guid.Empty)
             throw new ArgumentException("O userId não pode ser vazio", nameof(userId));
 
+        if (validityPeriod <= TimeSpan.Zero)
+            throw new ArgumentException("O período de validade deve ser maior que zero", nameof(validityPeriod));
+
         var expiresAt = DateTime.UtcNow.Add(validityPeriod);
         return new PasswordReset(token, userId, expiresAt);
     }
