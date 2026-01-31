@@ -14,15 +14,18 @@ public class ConfirmPasswordResetCommandHandler : IRequestHandler<ConfirmPasswor
 {
     private readonly UserManager<User> _userManager;
     private readonly IPasswordResetRepository _passwordResetRepository;
+    private readonly IRefreshTokenRepository _refreshTokenRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     public ConfirmPasswordResetCommandHandler(
         UserManager<User> userManager,
         IPasswordResetRepository passwordResetRepository,
+        IRefreshTokenRepository refreshTokenRepository,
         IUnitOfWork unitOfWork)
     {
         _userManager = userManager;
         _passwordResetRepository = passwordResetRepository;
+        _refreshTokenRepository = refreshTokenRepository;
         _unitOfWork = unitOfWork;
     }
 
@@ -54,6 +57,9 @@ public class ConfirmPasswordResetCommandHandler : IRequestHandler<ConfirmPasswor
 
         // Invalida todos os outros tokens de reset do usuário
         await _passwordResetRepository.InvalidateAllUserResetsAsync(user.Id, cancellationToken);
+
+        // Revoga todos os refresh tokens do usuário (encerra sessões)
+        await _refreshTokenRepository.RevokeAllUserTokensAsync(user.Id, cancellationToken);
 
         await _unitOfWork.CommitAsync(cancellationToken);
 
