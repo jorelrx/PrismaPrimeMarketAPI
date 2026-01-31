@@ -8,16 +8,11 @@ namespace PrismaPrimeMarket.Infrastructure.Repositories;
 /// <summary>
 /// Implementação do repositório de Refresh Tokens
 /// </summary>
-public class RefreshTokenRepository : BaseRepository<RefreshToken>, IRefreshTokenRepository
+public class RefreshTokenRepository(ApplicationDbContext context) : BaseRepository<RefreshToken>(context), IRefreshTokenRepository
 {
-    public RefreshTokenRepository(ApplicationDbContext context) : base(context)
-    {
-    }
-
     public async Task<RefreshToken?> GetByTokenAsync(string token, CancellationToken cancellationToken = default)
     {
         return await _context.Set<RefreshToken>()
-            .Include(rt => rt.User)
             .FirstOrDefaultAsync(rt => rt.Token == token, cancellationToken);
     }
 
