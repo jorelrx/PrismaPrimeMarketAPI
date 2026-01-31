@@ -16,7 +16,6 @@ namespace PrismaPrimeMarket.Application.UseCases.Auth.Commands.Login;
 public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto>
 {
     private readonly UserManager<User> _userManager;
-    private readonly IUserRepository _userRepository;
     private readonly IJwtTokenService _jwtTokenService;
     private readonly IRefreshTokenRepository _refreshTokenRepository;
     private readonly IUnitOfWork _unitOfWork;
@@ -24,14 +23,12 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto
 
     public LoginCommandHandler(
         UserManager<User> userManager,
-        IUserRepository userRepository,
         IJwtTokenService jwtTokenService,
         IRefreshTokenRepository refreshTokenRepository,
         IUnitOfWork unitOfWork,
         IMapper mapper)
     {
         _userManager = userManager;
-        _userRepository = userRepository;
         _jwtTokenService = jwtTokenService;
         _refreshTokenRepository = refreshTokenRepository;
         _unitOfWork = unitOfWork;
@@ -41,9 +38,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto
     public async Task<AuthResponseDto> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
         // Busca o usuário pelo email
-        var user = await _userManager.FindByEmailAsync(request.Email);
-        if (user == null)
-            throw new InvalidCredentialsException();
+        var user = await _userManager.FindByEmailAsync(request.Email) ?? throw new InvalidCredentialsException();
 
         // Verifica a senha
         var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);
@@ -79,7 +74,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto
 
         // Mapeia para DTO
         var userDto = _mapper.Map<UserDto>(user);
-        userDto.Roles = roles.ToList();
+        userDto.Roles = [.. roles];
 
         return new AuthResponseDto
         {
