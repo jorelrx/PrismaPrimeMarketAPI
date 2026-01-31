@@ -35,7 +35,7 @@ public class RequestPasswordResetCommandHandler : IRequestHandler<RequestPasswor
         var user = await _userManager.FindByEmailAsync(request.Email);
         if (user == null)
         {
-            _logger.LogWarning("Tentativa de reset de senha para email não cadastrado: {Email}", request.Email);
+            _logger.LogWarning("Tentativa de reset de senha para email não cadastrado.");
             return Unit.Value;
         }
 
