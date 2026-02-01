@@ -4,6 +4,13 @@ REM Script para validar código antes do commit/push
 echo 🚀 Iniciando validação do código...
 echo.
 
+REM 0. Iniciar banco de dados de testes
+echo ℹ️  Iniciando PostgreSQL para testes...
+docker-compose -f docker-compose.test.yml up -d postgres
+timeout /t 5 /nobreak >nul
+echo ✅ PostgreSQL iniciado
+echo.
+
 REM 1. Restore packages
 echo ℹ️  Restaurando pacotes...
 dotnet restore --verbosity quiet
@@ -41,6 +48,12 @@ if %ERRORLEVEL% neq 0 (
     echo ⚠️  Código não está formatado. Execute 'dotnet format' para corrigir.
     REM Não bloqueia o commit por formatação
 )
+echo.
+
+REM 5. Parar banco de dados de testes
+echo ℹ️  Parando PostgreSQL de testes...
+docker-compose -f docker-compose.test.yml down >nul 2>&1
+echo ✅ PostgreSQL parado
 echo.
 
 echo 🎉 Validação concluída com sucesso!

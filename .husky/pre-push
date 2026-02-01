@@ -2,6 +2,12 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 echo "🧪 Executando testes locais antes do push..."
+
+# Inicia PostgreSQL de testes
+echo "⏳ Iniciando PostgreSQL para testes..."
+docker-compose -f docker-compose.test.yml up -d
+sleep 5
+
 echo "⏳ Buildando o projeto..."
 
 # Build do projeto
@@ -9,6 +15,7 @@ dotnet build --configuration Release --no-restore
 
 if [ $? -ne 0 ]; then
   echo "❌ Build falhou! Push bloqueado."
+  docker-compose -f docker-compose.test.yml down
   exit 1
 fi
 
@@ -18,7 +25,13 @@ echo "⏳ Executando testes..."
 # Executa os testes
 dotnet test --no-build --configuration Release --verbosity normal
 
-if [ $? -ne 0 ]; then
+TEST_RESULT=$?
+
+# Para PostgreSQL de testes
+echo "⏳ Parando PostgreSQL de testes..."
+docker-compose -f docker-compose.test.yml down
+
+if [ $TEST_RESULT -ne 0 ]; then
   echo "❌ Testes falharam! Push bloqueado."
   echo "💡 Corrija os testes antes de fazer push."
   exit 1
