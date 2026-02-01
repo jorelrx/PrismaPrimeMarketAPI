@@ -19,11 +19,10 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
             config.AddInMemoryCollection(new Dictionary<string, string?>
             {
                 ["Jwt:AccessSecret"] = "ThisIsAVerySecureSecretKeyForTestingPurposesWithAtLeast32Characters!",
-                ["Jwt:RefreshSecret"] = "ThisIsAVerySecureRefreshSecretKeyForTestingPurposesWithAtLeast32Characters!",
                 ["Jwt:Issuer"] = "PrismaPrimeMarket.Tests",
                 ["Jwt:Audience"] = "PrismaPrimeMarket.Tests",
-                ["Jwt:AccessTokenExpirationMinutes"] = "60",
-                ["Jwt:RefreshTokenExpirationDays"] = "7"
+                ["Jwt:AccessExpiration"] = "00:60:00",
+                ["Jwt:RefreshExpiration"] = "7.00:00:00"
             });
         });
 
