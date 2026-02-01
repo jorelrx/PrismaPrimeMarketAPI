@@ -104,7 +104,7 @@ public class JwtTokenService : IJwtTokenService
     {
         var principal = ValidateToken(token);
         var userIdClaim = principal?.FindFirst(ClaimTypes.NameIdentifier);
-        
+
         if (userIdClaim != null && Guid.TryParse(userIdClaim.Value, out var userId))
         {
             return userId;
