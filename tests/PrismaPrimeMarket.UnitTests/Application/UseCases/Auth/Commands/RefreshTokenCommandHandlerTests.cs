@@ -94,7 +94,7 @@ public class RefreshTokenCommandHandlerTests
         var command = new RefreshTokenCommand("invalid_refresh_token");
 
         _refreshTokenRepositoryMock.Setup(x => x.GetByTokenAsync(command.RefreshToken, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((RefreshToken?)null);
+            .ReturnsAsync((RefreshToken)null!);
 
         // Act
         Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
@@ -112,14 +112,14 @@ public class RefreshTokenCommandHandlerTests
     {
         // Arrange
         var user = User.Create("testuser", "Test", "test@example.com");
-        // Cria um token que vai expirar em 1 segundo
         var expiredToken = RefreshToken.Create(
             "expired_refresh_token",
             user.Id,
-            DateTime.UtcNow.AddSeconds(1));
+            DateTime.UtcNow.AddDays(7));
 
-        // Aguarda para o token expirar
-        await Task.Delay(1100);
+        // Simula expiração alterando ExpiresAt via reflexão
+        var expiresAtField = typeof(RefreshToken).GetProperty("ExpiresAt");
+        expiresAtField!.SetValue(expiredToken, DateTime.UtcNow.AddSeconds(-1));
 
         var command = new RefreshTokenCommand("expired_refresh_token");
 
