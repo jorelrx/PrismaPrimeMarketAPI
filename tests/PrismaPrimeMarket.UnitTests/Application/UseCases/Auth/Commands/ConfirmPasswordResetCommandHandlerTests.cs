@@ -160,7 +160,7 @@ public class ConfirmPasswordResetCommandHandlerTests
             .ReturnsAsync(passwordReset);
 
         _userManagerMock.Setup(x => x.FindByIdAsync(userId.ToString()))
-            .ReturnsAsync((User?)null);
+            .ReturnsAsync((User)null);
 
         // Act
         Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
