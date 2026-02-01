@@ -83,7 +83,7 @@ public class ConfirmPasswordResetCommandHandlerTests
         var command = new ConfirmPasswordResetCommand("invalid_token", "NewSecurePass123!");
 
         _passwordResetRepositoryMock.Setup(x => x.GetByTokenAsync(command.Token, It.IsAny<CancellationToken>()))
-            .ReturnsAsync((PasswordReset)null!);
+            .ReturnsAsync((PasswordReset?)null);
 
         // Act
         Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
@@ -160,7 +160,7 @@ public class ConfirmPasswordResetCommandHandlerTests
             .ReturnsAsync(passwordReset);
 
         _userManagerMock.Setup(x => x.FindByIdAsync(userId.ToString()))
-            .ReturnsAsync((User)null!);
+            .ReturnsAsync((User?)null);
 
         // Act
         Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);
