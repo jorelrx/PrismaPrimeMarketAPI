@@ -209,7 +209,7 @@ public class RefreshTokenCommandHandlerTests
             .ReturnsAsync(refreshTokenEntity);
 
         _userManagerMock.Setup(x => x.FindByIdAsync(refreshTokenEntity.UserId.ToString()))
-            .ReturnsAsync((User?)null);
+            .ReturnsAsync((User)null!);
 
         // Act
         Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);

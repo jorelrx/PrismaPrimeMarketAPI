@@ -105,7 +105,7 @@ public class LoginCommandHandlerTests
         var command = new LoginCommand("nonexistent@example.com", "SecurePass123!");
 
         _userManagerMock.Setup(x => x.FindByEmailAsync(command.Email))
-            .ReturnsAsync((User?)null);
+            .ReturnsAsync((User)null!);
 
         // Act
         Func<Task> act = async () => await _handler.Handle(command, CancellationToken.None);

@@ -85,7 +85,7 @@ public class RequestPasswordResetCommandHandlerTests
         var command = new RequestPasswordResetCommand("nonexistent@example.com");
 
         _userManagerMock.Setup(x => x.FindByEmailAsync(command.Email))
-            .ReturnsAsync((User?)null);
+            .ReturnsAsync((User)null!);
 
         // Act
         var result = await _handler.Handle(command, CancellationToken.None);
