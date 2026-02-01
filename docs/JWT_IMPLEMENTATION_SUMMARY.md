@@ -187,9 +187,9 @@ CREATE INDEX "IX_PasswordResets_IsUsed" ON "PasswordResets"("IsUsed");
 
 ### Environment Variables (Optional)
 ```bash
-JWT_ACCESS_SECRET=your-secret-key
-JWT_ACCESS_EXPIRATION=15m
-JWT_REFRESH_EXPIRATION=7d
+Jwt__AccessSecret=your-secret-key-min-32-characters
+Jwt__AccessExpiration=15m
+Jwt__RefreshExpiration=7d
 ```
 
 ## Testing
