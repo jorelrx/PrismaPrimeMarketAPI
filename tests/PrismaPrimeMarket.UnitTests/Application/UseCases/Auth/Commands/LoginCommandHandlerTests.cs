@@ -50,15 +50,71 @@ public class LoginCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WithValidCredentials_ShouldReturnAuthResponse()
+    public async Task Handle_WithValidUsernameCredentials_ShouldReturnAuthResponse()
+    {
+        // Arrange
+        var command = new LoginCommand("testuser", "SecurePass123!");
+        var user = User.Create("testuser", "Test", "test@example.com");
+        var roles = new List<string> { "User" };
+
+        _userManagerMock.Setup(x => x.FindByEmailAsync(command.UsernameOrEmail))
+            .ReturnsAsync((User?)null);
+
+        _userManagerMock.Setup(x => x.FindByNameAsync(command.UsernameOrEmail))
+            .ReturnsAsync(user);
+
+        _userManagerMock.Setup(x => x.CheckPasswordAsync(user, command.Password))
+            .ReturnsAsync(true);
+
+        _userManagerMock.Setup(x => x.GetRolesAsync(user))
+            .ReturnsAsync(roles);
+
+        _jwtTokenServiceMock.Setup(x => x.GenerateAccessToken(user.Id, user.Email!, roles))
+            .Returns("access_token");
+
+        _jwtTokenServiceMock.Setup(x => x.GenerateRefreshToken())
+            .Returns("refresh_token");
+
+        _jwtTokenServiceMock.Setup(x => x.ParseExpirationConfig("Jwt:AccessExpiration"))
+            .Returns(TimeSpan.FromMinutes(15));
+
+        _jwtTokenServiceMock.Setup(x => x.ParseExpirationConfig("Jwt:RefreshExpiration"))
+            .Returns(TimeSpan.FromDays(7));
+
+        // Act
+        var result = await _handler.Handle(command, CancellationToken.None);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.User.Should().NotBeNull();
+        result.User.Email.Should().Be(user.Email);
+        result.User.UserName.Should().Be("testuser");
+        result.Tokens.Should().NotBeNull();
+        result.Tokens.AccessToken.Should().Be("access_token");
+        result.Tokens.RefreshToken.Should().Be("refresh_token");
+
+        _refreshTokenRepositoryMock.Verify(
+            x => x.AddAsync(It.IsAny<RefreshToken>(), It.IsAny<CancellationToken>()),
+            Times.Once);
+
+        _unitOfWorkMock.Verify(
+            x => x.CommitAsync(It.IsAny<CancellationToken>()),
+            Times.Exactly(2)); // Login registration + refresh token save
+    }
+
+    [Fact]
+    public async Task Handle_WithValidEmailCredentials_ShouldReturnAuthResponse()
     {
         // Arrange
         var command = new LoginCommand("test@example.com", "SecurePass123!");
         var user = User.Create("testuser", "Test", "test@example.com");
         var roles = new List<string> { "User" };
 
-        _userManagerMock.Setup(x => x.FindByEmailAsync(command.Email))
+        _userManagerMock.Setup(x => x.FindByEmailAsync(command.UsernameOrEmail))
             .ReturnsAsync(user);
+
+        _userManagerMock.Setup(x => x.FindByNameAsync(command.UsernameOrEmail))
+            .ReturnsAsync((User?)null);
 
         _userManagerMock.Setup(x => x.CheckPasswordAsync(user, command.Password))
             .ReturnsAsync(true);
@@ -99,12 +155,15 @@ public class LoginCommandHandlerTests
     }
 
     [Fact]
-    public async Task Handle_WithNonExistentEmail_ShouldThrowInvalidCredentialsException()
+    public async Task Handle_WithNonExistentEmailOrUsername_ShouldThrowInvalidCredentialsException()
     {
         // Arrange
         var command = new LoginCommand("nonexistent@example.com", "SecurePass123!");
 
-        _userManagerMock.Setup(x => x.FindByEmailAsync(command.Email))
+        _userManagerMock.Setup(x => x.FindByEmailAsync(command.UsernameOrEmail))
+            .ReturnsAsync((User?)null);
+
+        _userManagerMock.Setup(x => x.FindByNameAsync(command.UsernameOrEmail))
             .ReturnsAsync((User?)null);
 
         // Act
@@ -124,8 +183,11 @@ public class LoginCommandHandlerTests
         var command = new LoginCommand("test@example.com", "WrongPassword123!");
         var user = User.Create("testuser", "Test", "test@example.com");
 
-        _userManagerMock.Setup(x => x.FindByEmailAsync(command.Email))
+        _userManagerMock.Setup(x => x.FindByEmailAsync(command.UsernameOrEmail))
             .ReturnsAsync(user);
+
+        _userManagerMock.Setup(x => x.FindByNameAsync(command.UsernameOrEmail))
+            .ReturnsAsync((User?)null);
 
         _userManagerMock.Setup(x => x.CheckPasswordAsync(user, command.Password))
             .ReturnsAsync(false);
@@ -148,8 +210,11 @@ public class LoginCommandHandlerTests
         var user = User.Create("testuser", "Test", "test@example.com");
         user.Deactivate(); // Desativa o usuário
 
-        _userManagerMock.Setup(x => x.FindByEmailAsync(command.Email))
+        _userManagerMock.Setup(x => x.FindByEmailAsync(command.UsernameOrEmail))
             .ReturnsAsync(user);
+
+        _userManagerMock.Setup(x => x.FindByNameAsync(command.UsernameOrEmail))
+            .ReturnsAsync((User?)null);
 
         _userManagerMock.Setup(x => x.CheckPasswordAsync(user, command.Password))
             .ReturnsAsync(true);
@@ -175,8 +240,11 @@ public class LoginCommandHandlerTests
         var accessExpiration = TimeSpan.FromMinutes(15);
         var refreshExpiration = TimeSpan.FromDays(7);
 
-        _userManagerMock.Setup(x => x.FindByEmailAsync(command.Email))
+        _userManagerMock.Setup(x => x.FindByEmailAsync(command.UsernameOrEmail))
             .ReturnsAsync(user);
+
+        _userManagerMock.Setup(x => x.FindByNameAsync(command.UsernameOrEmail))
+            .ReturnsAsync((User?)null);
 
         _userManagerMock.Setup(x => x.CheckPasswordAsync(user, command.Password))
             .ReturnsAsync(true);
@@ -218,8 +286,11 @@ public class LoginCommandHandlerTests
         var user = User.Create("adminuser", "Admin", "admin@example.com");
         var roles = new List<string> { "Admin", "User" };
 
-        _userManagerMock.Setup(x => x.FindByEmailAsync(command.Email))
+        _userManagerMock.Setup(x => x.FindByEmailAsync(command.UsernameOrEmail))
             .ReturnsAsync(user);
+
+        _userManagerMock.Setup(x => x.FindByNameAsync(command.UsernameOrEmail))
+            .ReturnsAsync((User?)null);
 
         _userManagerMock.Setup(x => x.CheckPasswordAsync(user, command.Password))
             .ReturnsAsync(true);

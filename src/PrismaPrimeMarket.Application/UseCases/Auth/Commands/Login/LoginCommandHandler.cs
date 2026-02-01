@@ -37,8 +37,12 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthResponseDto
 
     public async Task<AuthResponseDto> Handle(LoginCommand request, CancellationToken cancellationToken)
     {
-        // Busca o usuário pelo email
-        var user = await _userManager.FindByEmailAsync(request.Email) ?? throw new InvalidCredentialsException();
+        // Busca o usuário pelo email ou username
+        var user = await _userManager.FindByEmailAsync(request.UsernameOrEmail)
+                   ?? await _userManager.FindByNameAsync(request.UsernameOrEmail);
+
+        if (user == null)
+            throw new InvalidCredentialsException();
 
         // Verifica a senha
         var isPasswordValid = await _userManager.CheckPasswordAsync(user, request.Password);

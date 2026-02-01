@@ -7,6 +7,6 @@ namespace PrismaPrimeMarket.Application.UseCases.Auth.Commands.Login;
 /// Command para autenticar usuário e gerar tokens JWT
 /// </summary>
 public record LoginCommand(
-    string Email,
+    string UsernameOrEmail,
     string Password
 ) : IRequest<AuthResponseDto>;

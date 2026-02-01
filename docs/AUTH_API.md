@@ -10,12 +10,22 @@ A API de autenticação JWT fornece endpoints seguros para gerenciar autenticaç
 
 Autentica um usuário e retorna tokens de acesso e refresh.
 
+O login pode ser feito usando **email** ou **username** no campo `usernameOrEmail`.
+
 **Endpoint:** `POST /api/v1/auth/login`
 
-**Request Body:**
+**Request Body (usando email):**
 ```json
 {
-  "email": "user@example.com",
+  "usernameOrEmail": "user@example.com",
+  "password": "StrongP@ssw0rd"
+}
+```
+
+**Request Body (usando username):**
+```json
+{
+  "usernameOrEmail": "johndoe",
   "password": "StrongP@ssw0rd"
 }
 ```
